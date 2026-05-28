@@ -1,4 +1,43 @@
+import { useIsMobile } from '../hooks/useIsMobile.js';
+
 export default function Submit() {
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    // Mobile redesign: centered, image-free CTA moment.
+    return (
+      <section className="submit" id="submit">
+        <div className="submit-inner">
+          <div className="submit-copy reveal">
+            <span className="submit-eyebrow">For hosts</span>
+            <h2 className="submit-title">
+              <span className="submit-title-line">Do you have</span>
+              <span className="submit-title-line submit-title-line--serif">
+                a home <em>we should know?</em>
+              </span>
+            </h2>
+
+            <a
+              className="submit-cta-button"
+              href="#submit"
+              onClick={(e) => e.preventDefault()}
+              aria-label="Submit your home"
+            >
+              <span>Submit your home</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </a>
+
+            <p className="submit-footnote">Reviewed personally. Never published without your word.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Desktop: frozen /goal two-column layout with form imagery.
   return (
     <section className="submit" id="submit">
       <div className="wrap">

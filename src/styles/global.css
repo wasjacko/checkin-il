@@ -1485,17 +1485,49 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   height: 100%;
   object-fit: cover;
 }
-@media (max-width: 720px) {
-  .picks-row { overflow-x: auto; padding-right: 16px; scrollbar-width: none; }
-  .picks-row::-webkit-scrollbar { display: none; }
-  .picks-item { height: 320px; width: 220px; }
-  .picks-item.picks-item-wide { width: 320px; }
+
+/* Mobile-only carousel — hidden on desktop */
+.picks-carousel { display: none; }
+
+/* Footer CTA — editorial underlined link below the picks */
+.picks-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(40px, 5vh, 60px);
+}
+.picks-viewall {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 4px;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.42);
+  transition:
+    border-color .3s var(--ease-luxe),
+    color .3s var(--ease-luxe),
+    transform .25s var(--ease);
+}
+.picks-viewall:hover {
+  border-color: #FFFFFF;
+}
+.picks-viewall:hover svg { transform: translateX(5px); }
+.picks-viewall svg {
+  width: 16px;
+  height: 16px;
+  transition: transform .4s var(--ease-luxe);
 }
 
 /* ===================  ALTERNATING  =================== */
 .alternating {
   padding: clamp(150px, 18vh, 210px) 0 clamp(90px, 12vh, 130px);
 }
+/* Desktop (/goal): two-column alternating rows */
 .alt-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1564,6 +1596,86 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   .alt-row.reverse .alt-text { margin-left: 0; }
 }
 
+/* Mobile redesign: full-bleed destination cards (see also the 720px block) */
+.alt-stack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(56px, 8vw, 96px);
+  max-width: 760px;
+  margin: 0 auto;
+}
+.alt-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.alt-card-media {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #0E1322;
+}
+.alt-card-media::after {
+  /* Subtle top gradient so the white overlay text stays readable on any image */
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 38%;
+  background: linear-gradient(180deg, rgba(10, 19, 34, 0.55) 0%, rgba(10, 19, 34, 0) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+.alt-card-media img {
+  position: absolute;
+  inset: -8% 0 -8% 0;
+  width: 100%;
+  height: 116%;
+  object-fit: cover;
+  display: block;
+  will-change: transform;
+}
+.alt-card-overlay {
+  position: absolute;
+  top: clamp(20px, 3vw, 32px);
+  left: clamp(22px, 3vw, 34px);
+  right: clamp(22px, 3vw, 34px);
+  z-index: 2;
+  color: #FFFFFF;
+  pointer-events: none;
+}
+.alt-card-title {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: clamp(28px, 3.4vw, 40px);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  margin: 0;
+  color: #FFFFFF;
+  max-width: 14ch;
+  text-wrap: balance;
+}
+.alt-card-location {
+  margin: 10px 0 0;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.92);
+}
+.alt-card-copy {
+  margin: 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--text-light);
+  max-width: 52ch;
+  padding: 0 4px;
+}
+
 /* ===================  EVERY ROOM  =================== */
 .everyroom {
   padding: clamp(80px, 11vh, 110px) 0 clamp(130px, 16vh, 180px);
@@ -1585,7 +1697,7 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   color: var(--text-light);
   display: block;
 }
-/* Editorial statement — 7 keywords highlighted with a teal marker stripe */
+/* Desktop (/goal): editorial statement — keywords highlighted with a teal marker stripe */
 .everyroom-statement {
   font-family: var(--serif);
   font-weight: 500;
@@ -1613,6 +1725,54 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   padding: 0 4px;
   border-radius: 2px;
   white-space: nowrap;
+}
+/* Mobile redesign: three editorial blocks (see also the 720px block) */
+.everyroom-blocks {
+  margin: 0 auto;
+  max-width: 1240px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: clamp(32px, 5vw, 72px);
+  row-gap: 56px;
+  padding: 0 24px;
+}
+.everyroom-block {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  max-width: 380px;
+  margin: 0 auto;
+}
+.everyroom-block-prefix {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  line-height: 1;
+}
+.everyroom-block-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-style: normal;
+  text-transform: uppercase;
+  font-size: clamp(34px, 4.2vw, 56px);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  color: #0E1322;
+  margin: 2px 0 6px;
+}
+.everyroom-block-body {
+  font-family: var(--sans);
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--text-light);
+  max-width: 320px;
+  margin: 0;
+  text-wrap: balance;
 }
 .everyroom-list {
   margin: 72px auto 0;
@@ -1735,6 +1895,40 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
 }
 .submit-img-main img,
 .submit-img-sub img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Mobile redesign: centered image-free CTA (see also the 720px block) */
+.submit-inner {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.submit-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 22px;
+  max-width: 640px;
+}
+.submit-title-line {
+  display: block;
+}
+.submit-title-line--serif em {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--accent-script);
+}
+.submit-footnote {
+  margin: 4px auto 0;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.46);
+  max-width: 36ch;
+  text-align: center;
+}
 
 /* ============ SUBMIT FORM (inside the navy section) ============ */
 .submit-form {
@@ -3122,7 +3316,7 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   .dest-recent-sub { font-size: 12.5px; }
 
   /* ============ STATS — compact 3-col row on mobile (no lonely vertical stack) ============ */
-  .stats { padding: 48px 0 40px; }
+  .stats { padding: 72px 0 64px; }
   .stats .wrap { padding: 0 20px; }
   /* Hide eyebrow + quote on mobile — too much text for a stat section */
   .stats > .wrap > .stats-eyebrow,
@@ -3142,7 +3336,7 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
      viewport so the next one peeks in — a classic mobile carousel cue.
      The desktop "notch + tab" design is dropped: the label sits ABOVE the
      image as plain text, image fills the card with clean rounded corners. */
-  .ultima { padding: 56px 0 64px; }
+  .ultima { padding: 84px 0 140px; }
   .ultima-title { font-size: clamp(26px, 7vw, 32px); padding: 0 20px; line-height: 1.22; }
   /* 6px lateral margin from the viewport — same as the hero image inset */
   .ultima-cards {
@@ -3192,190 +3386,228 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     color: #0E1322;
   }
 
-  /* ============ PICKS — editorial bento on mobile ============ */
+  /* ============ PICKS — horizontal scroll-snap carousel on mobile ============ */
   .picks {
-    padding: 72px 0 80px;
-    margin: 48px 8px;       /* 8px lateral matches the hero image inset */
-    border-radius: 14px;
+    padding: 80px 0 48px;
+    margin: 0;              /* full-bleed, no lateral margin; glued to Testimonial above */
+    border-radius: 0;       /* edge-to-edge — no rounding */
     overflow: hidden;
   }
-  .picks-header { margin-bottom: 36px; padding: 0 16px; }
-  .picks-title { font-size: clamp(36px, 10vw, 48px); margin-top: 12px; }
-  /* Kill horizontal scroll + autoplay; asymmetric grid edge-to-edge */
-  .picks-marquee { overflow: visible; }
-  .picks-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 220px 138px 138px;
-    gap: 2px;
-    padding: 0;        /* full-bleed, no horizontal margin */
+  .picks-header { margin-bottom: 32px; padding: 0 16px; }
+  .picks-title { font-size: clamp(34px, 9vw, 46px); margin-top: 12px; line-height: 1.04; }
+  /* Hide the desktop marquee on mobile */
+  .picks-marquee { display: none; }
+  /* Show the dedicated mobile carousel */
+  .picks-carousel {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 12px;
+    margin-top: 0;
+    padding: 0 12px 8px;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 12px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .picks-carousel::-webkit-scrollbar { display: none; }
+  .picks-card {
+    position: relative;
+    flex: 0 0 auto;
+    width: 76%;
+    max-width: 320px;
+    scroll-snap-align: start;
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .picks-card-media {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+  }
+  .picks-card-media img {
     width: 100%;
-    animation: none !important;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
-  .picks-row > .picks-item,
-  .picks-row > .picks-item.picks-item-wide {
-    width: auto !important;
-    height: auto !important;
-    border-radius: 0; /* sharp edges, editorial */
+  .picks-card-media::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(10, 19, 34, 0) 0%, rgba(10, 19, 34, 0.82) 95%);
+    pointer-events: none;
   }
-  /* Layout:
-     ┌─────────────────────┐  ← item 1: hero, full width (row 1)
-     │       HERO          │
-     ├───────────┬─────────┤
-     │           │  small  │  ← item 2: tall (col 1, rows 2-3)
-     │   tall    ├─────────┤  ← items 3, 4: squares col 2
-     │           │  small  │
-     └───────────┴─────────┘ */
-  .picks-row > .picks-item:nth-child(1) { grid-column: span 2; grid-row: 1; }
-  .picks-row > .picks-item:nth-child(2) { grid-row: 2 / span 2; }
-  /* items 3, 4 auto-flow into col 2 rows 2 and 3 */
-  /* Hide everything past 4 items (= duplicates from the desktop marquee) */
-  .picks-row > .picks-item:nth-child(n+5) { display: none; }
+  .picks-card-info {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 14px;
+    color: #FFFFFF;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .picks-card-label {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 19px;
+    line-height: 1.15;
+    letter-spacing: -0.005em;
+  }
+  .picks-card-location {
+    font-family: var(--sans);
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.78);
+  }
+  .picks-footer {
+    margin-top: 28px;
+    padding: 0 16px;
+  }
+  .picks-viewall {
+    font-size: 11.5px;
+    letter-spacing: 0.24em;
+    padding: 12px 4px;
+  }
 
-  /* ============ ALTERNATING ============ */
-  .alternating { padding: 64px 0 32px; }
-  .alt-row, .alt-row.reverse {
-    grid-template-columns: 1fr;
-    gap: 14px;
-    margin-bottom: 56px;
+  /* ============ ALTERNATING — vertical destination cards on mobile ============ */
+  .alternating { padding: 84px 0 72px; }
+  .alt-stack {
+    gap: 44px;
+    max-width: none;
   }
-  /* Image breaks out of the wrap to sit at 6px from viewport (matches hero) */
-  .alt-image {
+  /* Card image breaks out to match the 6px hero inset */
+  .alt-card-media {
     margin-left: calc(50% - 50vw + 6px);
     margin-right: calc(50% - 50vw + 6px);
     width: calc(100vw - 12px);
     max-width: none;
+    aspect-ratio: 3 / 4;
+    border-radius: 10px;
   }
-  .alt-row.reverse .alt-text { order: 1; text-align: left; margin-left: 0; }
-  .alt-row.reverse .alt-image { order: 2; }
-  .alt-row.reverse .alt-label { flex-direction: row; }
-  .alt-image {
-    aspect-ratio: 4 / 3;
-    border-radius: 8px;
+  .alt-card-overlay {
+    top: 20px;
+    left: 22px;
+    right: 22px;
   }
-  .alt-text h3 { font-size: 21px; line-height: 1.35; margin-top: 14px; }
-  .alt-label { font-size: 14px; gap: 12px; }
-  .alt-label::before { width: 28px; }
-
-  /* ============ EVERY ROOM — editorial statement on mobile ============ */
-  .everyroom { padding: 56px 0 64px; }
-  .everyroom-statement {
-    font-size: clamp(22px, 6.2vw, 30px);
-    margin: 28px 0 0;
-    line-height: 1.42;
+  .alt-card-title {
+    font-size: 26px;
+    line-height: 1.05;
+    max-width: 12ch;
+  }
+  .alt-card-location {
+    font-size: 13px;
+    margin-top: 8px;
+  }
+  .alt-card-copy {
+    font-size: 15.5px;
+    line-height: 1.5;
     padding: 0 18px;
-    text-wrap: pretty;
-  }
-  .everyroom-statement em {
-    /* Slightly more padding around highlighted words for breathing room */
-    padding: 0 3px;
+    margin-top: 4px;
   }
 
-  /* ============ SUBMIT (navy card) — editorial mobile layout, sharp + luxe ============ */
-  .submit {
-    width: calc(100% - 16px);
-    padding: 52px 0 56px;
-    border-radius: 14px;
-  }
-  .submit .wrap {
+  /* ============ EVERY ROOM — editorial blocks on mobile ============ */
+  .everyroom { padding: 48px 0 84px; }
+  .everyroom-blocks {
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
-    gap: 32px;
-    padding: 0 24px;
+    row-gap: 44px;
+    margin-top: 0;
+    padding: 0 22px;
   }
-  /* Reset desktop grid placements, stack everything vertically */
-  .submit-text { grid-column: 1; grid-row: 1; }
-  .submit-media { grid-column: 1; grid-row: 2; }
-  .submit-cta-button { grid-column: 1; grid-row: 3; justify-self: stretch; }
-  /* Text block — centered, generous breath */
-  .submit-text {
-    display: flex;
-    flex-direction: column;
+  .everyroom-block { gap: 10px; max-width: 100%; }
+  .everyroom-block-prefix {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+  }
+  .everyroom-block-title {
+    font-size: clamp(32px, 9vw, 42px);
+    line-height: 1.04;
+    margin: 2px 0 4px;
+  }
+  .everyroom-block-body {
+    font-size: 15px;
+    line-height: 1.55;
+    max-width: 360px;
+  }
+
+  /* ============ SUBMIT (navy card) — image-anchored mobile stack ============ */
+  .submit {
+    width: calc(100% - 12px);
+    padding: 22px 20px 32px;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  /* Subtle radial glow for depth (mobile redesign only) */
+  .submit::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 50% 65% at 80% 30%, rgba(93, 181, 164, 0.12) 0%, transparent 65%),
+      radial-gradient(ellipse 70% 50% at 10% 100%, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  /* When Submit follows Picks on mobile, they merge into one navy panel:
+     - Match Picks' 6px lateral inset
+     - Square the top corners (Picks already squared its bottom corners)
+     - No top margin so the seam is invisible */
+  .picks + .submit {
+    margin: 0 0 32px;       /* full-bleed to match Picks; stays merged below it */
+    width: auto;
+    border-radius: 0;       /* edge-to-edge — no rounding */
+    padding-top: 32px;
+    padding-bottom: clamp(64px, 9vh, 100px);
+    /* Hairline divider between Picks content and the host CTA */
+    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  }
+  .submit-inner {
+    max-width: none;
+  }
+  .submit-copy {
     align-items: center;
     text-align: center;
     gap: 18px;
+    max-width: none;
   }
-  /* "For host" — refined uppercase eyebrow, no pill */
   .submit-eyebrow {
     display: inline-block;
-    padding: 0;
-    background: transparent;
-    border: 0;
-    color: rgba(255, 255, 255, 0.72);
     font-family: var(--sans);
-    font-size: 11px;
     font-weight: 500;
-    letter-spacing: 0.28em;
     text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 10.5px;
+    letter-spacing: 0.3em;
   }
   .submit-title {
-    font-size: clamp(34px, 9vw, 44px);
     margin: 0;
-    line-height: 1.08;
+    font-family: var(--serif);
+    font-weight: 500;
+    color: var(--text-invert);
+    font-size: clamp(30px, 8.6vw, 40px);
+    line-height: 1.06;
     letter-spacing: -0.018em;
     text-wrap: balance;
   }
-  .submit-desc {
-    font-size: 14.5px;
-    line-height: 1.6;
-    max-width: 36ch;
-    margin: 0;
+  .submit-footnote {
+    font-size: 11.5px;
+    max-width: 28ch;
+    margin: 2px auto 0;
   }
-  /* Image — edge-to-edge feeling, almost sharp corners */
-  .submit-media { order: 2; margin: 0; }
-  .submit-media-imgs { padding: 0; position: relative; }
-  .submit-img-main {
-    aspect-ratio: 4 / 3;
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  .submit-img-sub { display: none; }
-  /* CTA — sharp outlined button, white on navy, sits below the image */
+  /* CTA stays the cream pill the user likes — full-width on mobile */
   .submit-cta-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
     width: 100%;
-    margin: 0;
-    padding: 18px 24px;
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.45);
-    border-radius: 4px;
-    color: #FFFFFF;
-    font-family: var(--sans);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    text-decoration: none;
-    box-shadow: none;
-    transition:
-      background .3s var(--ease-luxe),
-      color .3s var(--ease-luxe),
-      border-color .3s var(--ease-luxe);
-    order: 3;
+    max-width: 320px;
+    justify-content: center;
+    margin-top: 6px;
   }
-  .submit-cta-button:hover,
-  .submit-cta-button:active {
-    background: #FFFFFF;
-    color: var(--navy);
-    border-color: #FFFFFF;
-    transform: none;
-  }
-  .submit-cta-button svg {
-    width: 16px;
-    height: 16px;
-    transition: transform .35s var(--ease-luxe);
-  }
-  .submit-cta-button:hover svg { transform: translateX(4px); }
-  /* The overlay variant no longer exists in this layout */
   .submit-cta-overlay { display: none !important; }
-  /* Submit on mobile — hide sub-image, simpler stack, full-width CTA */
-  .submit-media-imgs {
-    padding-bottom: 0;
-    padding-left: 0;
-  }
   .submit-img-main { aspect-ratio: 4 / 3; border-radius: 12px; }
   .submit-img-sub { display: none; }
   .submit-cta {
@@ -3392,10 +3624,10 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
 
   /* ============ TESTIMONIAL ============ */
   .testimonial {
-    width: calc(100% - 16px);
-    padding: 48px 0 52px;
-    border-radius: 14px;
-    margin-top: 24px;
+    width: 100%;            /* full-bleed, no lateral margin */
+    padding: 72px 0 80px;
+    border-radius: 0;       /* edge-to-edge — no rounding */
+    margin: 56px 0 0;       /* keep top gap from Alternating; no bottom — glued to Picks */
   }
   /* On the narrow mobile viewport, quotes wrap to 4-5 lines — lock min height */
   .testimonial-quote { min-height: 7em; }
@@ -3413,8 +3645,8 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   .testimonial-quote { font-size: 15px; line-height: 1.55; }
 
   /* ============ FAQ ============ */
-  .faq { padding: 64px 0 72px; }
-  .faq-header { margin-bottom: 32px; }
+  .faq { padding: 96px 0 104px; }
+  .faq-header { margin-bottom: 40px; }
   .faq-title { font-size: 28px; margin-top: 14px; padding: 0 12px; line-height: 1.18; }
   .faq-q { padding: 22px 0; min-height: 64px; align-content: center; }
   .faq-text { font-size: 16px; }

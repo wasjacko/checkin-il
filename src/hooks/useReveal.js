@@ -23,10 +23,25 @@ export function useReveal() {
       { threshold: 0.12, rootMargin: '0px 0px -5% 0px' }
     );
 
+    // Register one element. If its top edge is already at or above the bottom
+    // of the viewport it has effectively entered view (or been scrolled past),
+    // so reveal it straight away — an IntersectionObserver attached to an
+    // element that's already out of view above only ever fires
+    // `isIntersecting:false`, which would leave it stuck at opacity:0. This
+    // covers initial load, scroll restoration, anchor jumps and — crucially —
+    // HMR remounts that happen while scrolled down the page. Anything still
+    // below the fold is observed so it animates in on scroll as intended.
+    const register = (el) => {
+      if (el.classList.contains('is-visible')) return;
+      if (el.getBoundingClientRect().top < window.innerHeight) {
+        el.classList.add('is-visible');
+      } else {
+        io.observe(el);
+      }
+    };
+
     const observeReveals = (root = document) => {
-      root.querySelectorAll('.reveal, .reveal-stagger').forEach((el) => {
-        if (!el.classList.contains('is-visible')) io.observe(el);
-      });
+      root.querySelectorAll('.reveal, .reveal-stagger').forEach(register);
     };
 
     // Initial pass
@@ -38,7 +53,7 @@ export function useReveal() {
         m.addedNodes.forEach((node) => {
           if (node.nodeType !== 1) return; // element only
           if (node.matches && node.matches('.reveal, .reveal-stagger')) {
-            io.observe(node);
+            register(node);
           }
           if (node.querySelectorAll) observeReveals(node);
         });
