@@ -50,6 +50,22 @@ export default function Hero() {
         </div>
       </div>
 
+      {/* Mobile-only KPI row, sits just above the trust tag */}
+      <div className="hero-kpis-mobile" aria-hidden="true">
+        <div className="hero-kpi">
+          <span className="hero-kpi-val">120+</span>
+          <span className="hero-kpi-label">Residences</span>
+        </div>
+        <div className="hero-kpi">
+          <span className="hero-kpi-val">97%</span>
+          <span className="hero-kpi-label">Return rate</span>
+        </div>
+        <div className="hero-kpi">
+          <span className="hero-kpi-val">5+</span>
+          <span className="hero-kpi-label">Years curating</span>
+        </div>
+      </div>
+
       {/* Mobile-only — a quiet line of proof in place of the avatar block */}
       <p className="hero-tag-mobile">
         ★★★★★ &nbsp; Trusted by 3,000+ returning guests

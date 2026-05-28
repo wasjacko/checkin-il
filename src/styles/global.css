@@ -1005,6 +1005,8 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
 
 /* Mobile-only proof text in the hero (replaces the avatar/stars block on mobile) */
 .hero-tag-mobile { display: none; }
+/* Mobile-only KPI row in the hero (replaces the Stats section on small screens) */
+.hero-kpis-mobile { display: none; }
 
 /* Field icon (pin/calendar/users) + chevron — hidden on desktop, shown on mobile */
 .field-icon, .field-chevron { display: none; }
@@ -2655,18 +2657,60 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    bottom: 36px;
+    bottom: 28px;
     width: calc(100% - 40px);
     max-width: 320px;
     text-align: center;
     font-family: var(--sans);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     color: #FFFFFF;
     line-height: 1.4;
     letter-spacing: -0.005em;
     text-shadow: 0 1px 8px rgba(10, 17, 36, 0.25);
     z-index: 3;
+  }
+  /* KPI row — sits just above the trust tag, white + small + discrete */
+  .hero-kpis-mobile {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 64px;
+    width: calc(100% - 36px);
+    max-width: 320px;
+    text-align: center;
+    z-index: 3;
+  }
+  .hero-kpi { display: flex; flex-direction: column; align-items: center; }
+  .hero-kpi-val {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1;
+    color: #FFFFFF;
+    letter-spacing: -0.01em;
+    text-shadow: 0 1px 8px rgba(10, 17, 36, 0.22);
+  }
+  .hero-kpi-label {
+    margin-top: 4px;
+    font-family: var(--sans);
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.75);
+    letter-spacing: 0.02em;
+    text-shadow: 0 1px 6px rgba(10, 17, 36, 0.22);
+  }
+  /* Hide the dedicated Stats section on mobile — the hero now carries the KPIs */
+  section.stats { display: none; }
+
+  /* Nav — smaller logo, tighter horizontal placement (logo right, burger left) */
+  .nav {
+    padding: 24px 28px 18px;
+  }
+  .logo-img {
+    height: 24px;
   }
 
   /* MOTION ON MOBILE — calmer, no parallax (janky on small screens),
