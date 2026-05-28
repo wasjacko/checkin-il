@@ -74,6 +74,11 @@ export default function SearchBar() {
   // Error state for the "Show N places" action when destination is missing
   const [mobileError, setMobileError] = useState(null);  // null | 'no-dest'
 
+  // === AI search sheet ===
+  const [aiSheetOpen, setAiSheetOpen] = useState(false);
+  const [aiQuery, setAiQuery] = useState('');
+  const [aiSending, setAiSending] = useState(false);
+
   // Close popovers when clicking outside
   useEffect(() => {
     const onDocClick = (e) => {
@@ -97,13 +102,32 @@ export default function SearchBar() {
     setGuestsDisplay(t);
   }, [adults, children, guestsTouched]);
 
-  // Lock body scroll when ANY sheet (desktop popover OR mobile accordion) is open
+  // Lock body scroll when ANY sheet is open (desktop popover, mobile accordion, AI)
   useEffect(() => {
-    const anyOpen = openField || mobileSheetOpen;
+    const anyOpen = openField || mobileSheetOpen || aiSheetOpen;
     if (anyOpen) document.body.classList.add('sheet-open');
     else document.body.classList.remove('sheet-open');
     return () => document.body.classList.remove('sheet-open');
-  }, [openField, mobileSheetOpen]);
+  }, [openField, mobileSheetOpen, aiSheetOpen]);
+
+  // === AI sheet handlers ===
+  const onAISubmit = () => {
+    if (!aiQuery.trim()) return;
+    setAiSending(true);
+    // Mock: in production, post aiQuery to the AI search backend
+    setTimeout(() => {
+      setAiSending(false);
+      setAiSheetOpen(false);
+      setAiQuery('');
+      const btn = submitBtnRef.current;
+      if (btn) {
+        btn.classList.remove('is-pulse');
+        void btn.offsetWidth;
+        btn.classList.add('is-pulse');
+        setTimeout(() => btn.classList.remove('is-pulse'), 700);
+      }
+    }, 900);
+  };
 
   // === Mobile combined sheet handlers ===
   const openMobileSheet = () => {
@@ -666,6 +690,23 @@ export default function SearchBar() {
       </div>
     </form>
 
+    {/* ============ AI SEARCH — secondary affordance below the main search ============
+        Sparkle icon + "Describe your stay" — opens a sheet with a textarea. */}
+    <button
+      type="button"
+      className="search-ai-cta"
+      onClick={() => setAiSheetOpen(true)}
+      aria-label="Search with AI by describing your stay"
+    >
+      <span className="ai-sparkle" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M10 2 L11.4 7.6 17 9 L11.4 10.4 10 16 L8.6 10.4 3 9 L8.6 7.6 Z" />
+          <path d="M18 13 L18.7 15.8 21.5 16.5 L18.7 17.2 18 20 L17.3 17.2 14.5 16.5 L17.3 15.8 Z" />
+        </svg>
+      </span>
+      <span className="ai-cta-text">Describe your stay with AI</span>
+    </button>
+
     {/* ============ MOBILE COMBINED SEARCH SHEET (portaled to body) ============
         One sheet, 3 accordion rows. Only the active step shows its content.
         Rendered via createPortal so it sits ABOVE every stacking context
@@ -1012,6 +1053,101 @@ export default function SearchBar() {
     </div>
     </>,
     document.body
+    )}
+
+    {/* ============ AI SEARCH SHEET (portaled to body) ============ */}
+    {createPortal(
+      <>
+        {aiSheetOpen && (
+          <div
+            className="sheet-backdrop sheet-backdrop-top sheet-backdrop-ai"
+            onClick={() => setAiSheetOpen(false)}
+            aria-hidden="true"
+          />
+        )}
+        <div
+          className={'search-ai-sheet' + (aiSheetOpen ? ' open' : '')}
+          role="dialog"
+          aria-label="Describe your stay"
+          aria-modal="true"
+        >
+          <div className="mobile-sheet-top">
+            <span className="mobile-sheet-grabber" aria-hidden="true" />
+            <button
+              type="button"
+              className="mobile-sheet-close"
+              onClick={() => setAiSheetOpen(false)}
+              aria-label="Close"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+
+          <div className="ai-sheet-content">
+            <div className="ai-sheet-header">
+              <span className="ai-sparkle ai-sparkle-lg" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M10 2 L11.4 7.6 17 9 L11.4 10.4 10 16 L8.6 10.4 3 9 L8.6 7.6 Z" />
+                  <path d="M18 13 L18.7 15.8 21.5 16.5 L18.7 17.2 18 20 L17.3 17.2 14.5 16.5 L17.3 15.8 Z" />
+                </svg>
+              </span>
+              <h3 className="ai-sheet-title">Describe your stay</h3>
+              <p className="ai-sheet-subtitle">
+                Tell us what you have in mind — we&rsquo;ll find the closest residences.
+              </p>
+            </div>
+
+            <textarea
+              className="ai-sheet-textarea"
+              value={aiQuery}
+              onChange={(e) => setAiQuery(e.target.value)}
+              placeholder="A quiet stone house in the Upper Galilee, four nights in late September. Two adults, somewhere with a view, a pool would be nice…"
+              rows={5}
+              enterKeyHint="send"
+              aria-label="Describe your stay"
+            />
+
+            <div className="ai-sheet-suggestions">
+              <span className="ai-sheet-suggestions-label">Or try…</span>
+              <div className="ai-sheet-chips">
+                {[
+                  'A weekend in Tel Aviv with a sea view',
+                  'A farmhouse near Caesarea for a family of four',
+                  'Late September in the Galilee, quiet',
+                ].map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    className="ai-sheet-chip"
+                    onClick={() => setAiQuery(s)}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              className="ai-sheet-submit"
+              onClick={onAISubmit}
+              disabled={!aiQuery.trim() || aiSending}
+            >
+              {aiSending ? 'Finding…' : 'Find places'}
+              {!aiSending && (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              )}
+            </button>
+          </div>
+        </div>
+      </>,
+      document.body
     )}
     </>
   );
