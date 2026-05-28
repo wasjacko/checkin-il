@@ -1031,7 +1031,7 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(28, 46, 89, 0.10);
-  border-radius: 999px;
+  border-radius: 10px;
   color: var(--navy);
   font-family: var(--sans);
   font-size: 13px;
