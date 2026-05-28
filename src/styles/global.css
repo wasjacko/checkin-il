@@ -1870,6 +1870,8 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   line-height: 1.6;
   color: #2A2F3A;
   letter-spacing: normal;
+  /* Lock a minimum height so the card doesn't jump when reviews rotate */
+  min-height: 3.2em;
 }
 .testimonial-foot {
   margin-top: 26px;
@@ -2725,6 +2727,8 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     border-radius: 14px;
     margin-top: 24px;
   }
+  /* On the narrow mobile viewport, quotes wrap to 4-5 lines — lock min height */
+  .testimonial-quote { min-height: 7em; }
   .testimonial-proof {
     padding: 0 24px;
     align-items: center;
