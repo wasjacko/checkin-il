@@ -2240,15 +2240,18 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   }
   .hero-tagline { display: none; }
 
-  /* SEARCH on mobile — collapse the form to a single big CTA button.
-     The 3 individual fields are hidden; tapping the CTA opens the combined
-     bottom-sheet (.search-mobile-sheet) with the 3-step accordion. */
+  /* SEARCH on mobile — no longer a container, just a wrapper for the CTA.
+     Background, border and shadow are stripped because the only visible
+     child is the gradient-framed CTA button. */
   .search {
     grid-template-columns: 1fr;
     grid-template-rows: auto;
     height: auto;
-    padding: 6px;
-    border-radius: 14px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
     gap: 0;
     margin-top: 48px;
   }
