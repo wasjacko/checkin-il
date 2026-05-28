@@ -3144,20 +3144,17 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
      image as plain text, image fills the card with clean rounded corners. */
   .ultima { padding: 56px 0 64px; }
   .ultima-title { font-size: clamp(26px, 7vw, 32px); padding: 0 20px; line-height: 1.22; }
+  /* Edge-to-edge: no margin on the section, cards start at viewport edge */
   .ultima-cards {
     display: flex;
     flex-wrap: nowrap;
     gap: 12px;
     margin-top: 32px;
-    /* Break out of .wrap on both sides so the carousel runs the full viewport
-       width. The padding-inline + scroll-padding-inline below create a
-       consistent gutter on whichever side the snapped card is anchored to:
-       first card snaps with a left gutter, last card snaps with a right gutter. */
     margin-left: calc(var(--gut) * -1);
     margin-right: calc(var(--gut) * -1);
     width: calc(100% + var(--gut) * 2);
-    padding: 0 var(--gut) 8px;
-    scroll-padding-inline: var(--gut);
+    padding: 0 0 8px;
+    scroll-padding-inline: 0;
     overflow-x: auto;
     overflow-y: visible;
     scroll-snap-type: x mandatory;
