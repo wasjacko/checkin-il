@@ -1011,6 +1011,10 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
 .field-icon, .field-chevron { display: none; }
 .field-text { display: contents; }
 
+/* Mobile-only single-CTA + combined search sheet — hidden on desktop */
+.search-mobile-cta { display: none; }
+.search-mobile-sheet { display: none; }
+
 
 /* ===================  STATS  =================== */
 .stats {
@@ -2232,16 +2236,48 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   }
   .hero-tagline { display: none; }
 
-  /* SEARCH — single-column stack on mobile, each field full width, generous tap targets */
+  /* SEARCH on mobile — collapse the form to a single big CTA button.
+     The 3 individual fields are hidden; tapping the CTA opens the combined
+     bottom-sheet (.search-mobile-sheet) with the 3-step accordion. */
   .search {
     grid-template-columns: 1fr;
     grid-template-rows: auto;
     height: auto;
-    padding: 8px;
-    border-radius: 18px;
+    padding: 6px;
+    border-radius: 14px;
     gap: 0;
     margin-top: 48px;
   }
+  /* Hide the 3 desktop fields and the desktop submit on mobile */
+  .search > .search-field { display: none; }
+  .search > .search-submit-wrap { display: none; }
+  /* The mobile CTA fills the whole bar */
+  .search-mobile-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 18px 22px;
+    background: var(--navy);
+    color: #FFFFFF;
+    border: 0;
+    border-radius: 10px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    box-shadow:
+      0 0 0 1.4px #F3F4F6,
+      0 0 0 1.9px #FFFFFF,
+      0 0 0 3.3px #F3F4F6;
+    margin: 3.3px;
+    cursor: pointer;
+    transition: background .25s var(--ease), transform .15s var(--ease);
+  }
+  .search-mobile-cta:hover { background: var(--navy-soft); }
+  .search-mobile-cta:active { transform: scale(0.98); }
+  .search-mobile-cta svg { width: 22px; height: 22px; }
   .search-field {
     width: 100%;
     padding: 14px 16px;
@@ -2394,7 +2430,237 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   .reveal-up { transform: translate3d(0, 20px, 0); }
   .reveal-scale, .reveal-scale.is-visible { transform: none; }
 
-  /* ============ POPOVERS → BOTTOM SHEETS ON MOBILE ============ */
+  /* ============ COMBINED MOBILE SEARCH SHEET (accordion-style) ============ */
+  /* Hide the 3 individual popovers on mobile — replaced by the combined sheet */
+  .search-popover.dest-popover,
+  .search-popover.calendar-popover,
+  .search-popover.guests-popover { display: none !important; }
+
+  .search-mobile-sheet {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    inset: auto 0 0 0;
+    max-height: 92dvh;
+    background: #FFFFFF;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -24px 60px -12px rgba(10, 17, 36, 0.28);
+    z-index: 260;
+    transform: translateY(100%);
+    opacity: 0;
+    transition:
+      transform .42s cubic-bezier(0.32, 0.72, 0, 1),
+      opacity .25s ease;
+  }
+  .search-mobile-sheet.open {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  .mobile-sheet-grabber {
+    display: block;
+    width: 38px;
+    height: 4px;
+    background: rgba(28, 46, 89, 0.18);
+    border-radius: 2px;
+    margin: 10px auto 4px;
+    flex-shrink: 0;
+  }
+  .mobile-sheet-scroll {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 0 0;
+  }
+
+  /* === Accordion rows === */
+  .mobile-step {
+    background: var(--bg-stone);
+    border-bottom: 1px solid var(--line-cool);
+  }
+  .mobile-step:first-child { border-top: 1px solid var(--line-cool); }
+  .mobile-step.is-active { background: #FFFFFF; }
+
+  .mobile-step-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 22px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font-family: var(--sans);
+    text-align: left;
+    min-height: 64px;
+  }
+  .mobile-step-header .step-label {
+    font-size: 17px;
+    font-weight: 700;
+    color: rgba(28, 46, 89, 0.55);
+    letter-spacing: -0.005em;
+  }
+  .mobile-step.is-active .mobile-step-header .step-label {
+    color: var(--navy);
+  }
+  .mobile-step-header .step-value {
+    font-size: 13.5px;
+    font-style: italic;
+    color: rgba(28, 46, 89, 0.55);
+    text-align: right;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .mobile-step.is-active .mobile-step-header .step-value {
+    color: var(--accent-script);
+    font-style: italic;
+  }
+
+  .mobile-step-body {
+    padding: 0 22px 24px;
+    animation: fadeIn .22s var(--ease-luxe);
+  }
+
+  /* === Destination step content === */
+  .mobile-dest-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: #F1F2F4;
+    border-radius: 12px;
+    margin: 4px 0 18px;
+  }
+  .mobile-dest-search svg {
+    width: 18px;
+    height: 18px;
+    color: rgba(28, 46, 89, 0.55);
+    flex-shrink: 0;
+  }
+  .mobile-dest-search input {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    outline: none;
+    font-family: var(--sans);
+    font-size: 16px;
+    color: var(--navy);
+  }
+  .mobile-dest-search input::placeholder { color: rgba(28, 46, 89, 0.40); }
+
+  .mobile-dest-result {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 4px;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+  .mobile-dest-result:hover { background: rgba(28, 46, 89, 0.03); }
+  .mobile-dest-pin {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: #F1F2F4;
+    border-radius: 10px;
+    color: var(--navy);
+    flex-shrink: 0;
+  }
+  .mobile-dest-pin svg { width: 18px; height: 18px; }
+  .mobile-dest-name { font-size: 15px; color: var(--navy); }
+  .mobile-dest-name strong, .mobile-dest-name b { color: var(--navy); font-weight: 700; }
+
+  /* Suggested destinations: horizontal scroll cards */
+  .mobile-suggested-scroller {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin: 0 -22px;
+    padding: 0 22px 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .mobile-suggested-scroller::-webkit-scrollbar { display: none; }
+  .mobile-suggested-card {
+    flex: 0 0 auto;
+    width: 140px;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    text-align: left;
+    cursor: pointer;
+  }
+  .mobile-suggested-img {
+    width: 140px;
+    height: 140px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .mobile-suggested-img img {
+    width: 100%; height: 100%; object-fit: cover;
+    display: block;
+  }
+  .mobile-suggested-name {
+    font-size: 14px;
+    color: var(--navy);
+    font-weight: 500;
+  }
+
+  /* === Calendar step content (continuous) === */
+  .mobile-cal-months {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    position: relative;
+  }
+  .mobile-cal-months .cal-nav { top: 4px; }
+
+  /* === Guests step content reuses existing popover-row + counter styles === */
+
+  /* === Bottom action bar === */
+  .mobile-sheet-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 22px max(18px, env(safe-area-inset-bottom));
+    background: #FFFFFF;
+    border-top: 1px solid var(--line-cool);
+    flex-shrink: 0;
+  }
+  .mobile-sheet-actions .action-clear {
+    background: transparent;
+    border: 0;
+    padding: 12px 4px;
+    color: var(--navy);
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    cursor: pointer;
+  }
+  .mobile-sheet-actions .action-show {
+    flex: 1;
+    max-width: 220px;
+    padding: 14px 20px;
+    background: var(--navy);
+    color: #FFFFFF;
+    border: 0;
+    border-radius: 10px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s var(--ease);
+  }
+  .mobile-sheet-actions .action-show:hover { background: var(--navy-soft); }
+
+  /* ============ POPOVERS → BOTTOM SHEETS ON MOBILE (legacy) ============ */
   /* The three popovers transform from "inline below the field" into a
      native-feeling bottom sheet that slides up from the bottom of the
      screen. Full-width, max 88dvh, grabber handle, body scroll locked. */

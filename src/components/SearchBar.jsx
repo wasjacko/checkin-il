@@ -63,6 +63,13 @@ export default function SearchBar() {
   const [children, setChildren] = useState(0);
   const [guestsTouched, setGuestsTouched] = useState(false);
   const [guestsDisplay, setGuestsDisplay] = useState('Add who\'s coming');
+  const [petsAllowed, setPetsAllowed] = useState(false);
+
+  // === Mobile combined search sheet ===
+  // mobileSheetOpen: whether the accordion sheet is open
+  // mobileStep: which step is expanded — 'dest' | 'date' | 'guests'
+  const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
+  const [mobileStep, setMobileStep] = useState('dest');
 
   // Close popovers when clicking outside
   useEffect(() => {
@@ -87,13 +94,37 @@ export default function SearchBar() {
     setGuestsDisplay(t);
   }, [adults, children, guestsTouched]);
 
-  // Lock body scroll when a bottom sheet is open on mobile.
-  // Also marks the body so we can show a backdrop layer.
+  // Lock body scroll when ANY sheet (desktop popover OR mobile accordion) is open
   useEffect(() => {
-    if (openField) document.body.classList.add('sheet-open');
+    const anyOpen = openField || mobileSheetOpen;
+    if (anyOpen) document.body.classList.add('sheet-open');
     else document.body.classList.remove('sheet-open');
     return () => document.body.classList.remove('sheet-open');
-  }, [openField]);
+  }, [openField, mobileSheetOpen]);
+
+  // === Mobile combined sheet handlers ===
+  const openMobileSheet = () => {
+    setMobileSheetOpen(true);
+    setMobileStep('dest');
+  };
+  const closeMobileSheet = () => setMobileSheetOpen(false);
+  const clearAll = () => {
+    setDestInputValue('');
+    setDestQuery('');
+    setActiveDestKey(null);
+    setStartDate(null);
+    setEndDate(null);
+    setDateDisplay('Choose your nights');
+    setAdults(2);
+    setChildren(0);
+    setGuestsTouched(false);
+    setGuestsDisplay("Add who's coming");
+    setPetsAllowed(false);
+    setMobileStep('dest');
+  };
+
+  // Mock count — would come from a real search API
+  const placesCount = 124;
 
   const toggleField = (field) => setOpenField((cur) => (cur === field ? null : field));
 
@@ -235,11 +266,14 @@ export default function SearchBar() {
 
   return (
     <>
-      {/* Mobile-only backdrop behind the bottom sheets. Tap to close. */}
-      {openField && (
+      {/* Mobile-only backdrop behind any open sheet. Tap to close. */}
+      {(openField || mobileSheetOpen) && (
         <div
           className="sheet-backdrop"
-          onClick={() => setOpenField(null)}
+          onClick={() => {
+            setOpenField(null);
+            setMobileSheetOpen(false);
+          }}
           aria-hidden="true"
         />
       )}
@@ -251,6 +285,21 @@ export default function SearchBar() {
       aria-label="Search a residence"
       onSubmit={onSubmit}
     >
+      {/* Mobile-only: single CTA that opens the combined search sheet.
+          Hidden on desktop via CSS. */}
+      <button
+        type="button"
+        className="search-mobile-cta"
+        onClick={openMobileSheet}
+        aria-label="Search residences"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="6" />
+          <path d="m20 20-4.5-4.5" />
+        </svg>
+        <span>Search</span>
+      </button>
+
       {/* DESTINATION */}
       <div
         className={'search-field' + (openField === 'dest' ? ' is-open' : '')}
@@ -613,6 +662,298 @@ export default function SearchBar() {
         </div>
       </div>
     </form>
+
+    {/* ============ MOBILE COMBINED SEARCH SHEET ============
+        One sheet, 3 accordion rows. Only the active step shows its content.
+        Hidden on desktop via CSS. */}
+    <div
+      className={'search-mobile-sheet' + (mobileSheetOpen ? ' open' : '')}
+      role="dialog"
+      aria-label="Search residences"
+      aria-modal="true"
+    >
+      <span className="mobile-sheet-grabber" aria-hidden="true" />
+
+      <div className="mobile-sheet-scroll">
+        {/* ---- DESTINATION ---- */}
+        <div className={'mobile-step' + (mobileStep === 'dest' ? ' is-active' : '')}>
+          <button
+            type="button"
+            className="mobile-step-header"
+            onClick={() => setMobileStep('dest')}
+          >
+            <span className="step-label">Destination</span>
+            <span className="step-value">
+              {mobileStep === 'dest'
+                ? 'Selected'
+                : (destInputValue || 'Select…')}
+            </span>
+          </button>
+          {mobileStep === 'dest' && (
+            <div className="mobile-step-body">
+              <div className="mobile-dest-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="6" />
+                  <path d="m20 20-4.5-4.5" />
+                </svg>
+                <input
+                  type="search"
+                  inputMode="search"
+                  enterKeyHint="search"
+                  placeholder="Search destinations"
+                  value={destInputValue}
+                  onChange={(e) => {
+                    setDestInputValue(e.target.value);
+                    setDestQuery(e.target.value);
+                  }}
+                  autoComplete="off"
+                />
+              </div>
+
+              {filteredDests !== null ? (
+                <div className="mobile-dest-results">
+                  <ul className="dest-recent-list">
+                    {filteredDests.length === 0 ? (
+                      <li className="dest-section-label">No matches for "{destQuery}"</li>
+                    ) : (
+                      filteredDests.map((d) => (
+                        <li
+                          key={d.value}
+                          className="mobile-dest-result"
+                          onClick={() => {
+                            pickDest(d);
+                            setMobileStep('date');
+                          }}
+                        >
+                          <span className="mobile-dest-pin" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                              <circle cx="12" cy="10" r="3" />
+                            </svg>
+                          </span>
+                          <span className="mobile-dest-name">{d.name}</span>
+                        </li>
+                      ))
+                    )}
+                  </ul>
+                </div>
+              ) : (
+                <>
+                  <div className="dest-section">
+                    <div className="dest-section-label">Recent searches</div>
+                    <ul className="dest-recent-list">
+                      {RECENT.map((r) => (
+                        <li
+                          key={r.value}
+                          className="dest-recent-item"
+                          onClick={() => {
+                            pickDest({ value: r.value, name: r.title });
+                            setMobileStep('date');
+                          }}
+                        >
+                          <div className="dest-recent-thumb">
+                            <img src={r.img} alt="" />
+                            <span className="dest-recent-icon" aria-hidden="true">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="9" />
+                                <polyline points="12 7 12 12 15 14" />
+                              </svg>
+                            </span>
+                          </div>
+                          <div>
+                            <div className="dest-recent-title">{r.title}</div>
+                            <div className="dest-recent-sub">{r.sub}</div>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="dest-section">
+                    <div className="dest-section-label">Suggested destinations</div>
+                    <div className="mobile-suggested-scroller">
+                      {SUGGESTED.map((s) => (
+                        <button
+                          key={s.value}
+                          type="button"
+                          className="mobile-suggested-card"
+                          onClick={() => {
+                            pickDest(s);
+                            setMobileStep('date');
+                          }}
+                        >
+                          <div className="mobile-suggested-img">
+                            <img src={s.img} alt={s.name} loading="lazy" />
+                          </div>
+                          <div className="mobile-suggested-name">{s.name}</div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* ---- DATES ---- */}
+        <div className={'mobile-step' + (mobileStep === 'date' ? ' is-active' : '')}>
+          <button
+            type="button"
+            className="mobile-step-header"
+            onClick={() => setMobileStep('date')}
+          >
+            <span className="step-label">Dates</span>
+            <span className="step-value">
+              {mobileStep === 'date'
+                ? 'Selected'
+                : (dateDisplay === 'Choose your nights' ? 'Select…' : dateDisplay)}
+            </span>
+          </button>
+          {mobileStep === 'date' && (
+            <div className="mobile-step-body">
+              <div className="cal-months mobile-cal-months">
+                <button
+                  type="button"
+                  className="cal-nav"
+                  data-act="prev"
+                  aria-label="Previous month"
+                  onClick={(e) => { e.stopPropagation(); setViewDate(new Date(y, m - 1, 1)); }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  className="cal-nav"
+                  data-act="next"
+                  aria-label="Next month"
+                  onClick={(e) => { e.stopPropagation(); setViewDate(new Date(y, m + 1, 1)); }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </button>
+                <div className="cal-month">
+                  <div className="cal-month-head"><span className="cal-month-name">{MONTH_NAMES[m] + ' ' + y}</span></div>
+                  <div className="cal-grid">{renderMonth(y, m)}</div>
+                </div>
+                <div className="cal-month">
+                  <div className="cal-month-head"><span className="cal-month-name">{MONTH_NAMES[nm] + ' ' + ny}</span></div>
+                  <div className="cal-grid">{renderMonth(ny, nm)}</div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ---- GUESTS ---- */}
+        <div className={'mobile-step' + (mobileStep === 'guests' ? ' is-active' : '')}>
+          <button
+            type="button"
+            className="mobile-step-header"
+            onClick={() => setMobileStep('guests')}
+          >
+            <span className="step-label">Guests</span>
+            <span className="step-value">
+              {mobileStep === 'guests'
+                ? 'Selected'
+                : (guestsDisplay === "Add who's coming" ? 'Select…' : guestsDisplay)}
+            </span>
+          </button>
+          {mobileStep === 'guests' && (
+            <div className="mobile-step-body">
+              <div className="popover-row">
+                <div>
+                  <div className="popover-label-name">Adults</div>
+                  <div className="popover-hint">Ages 13+</div>
+                </div>
+                <div className="counter">
+                  <button
+                    className="counter-btn"
+                    type="button"
+                    aria-label="Decrease adults"
+                    disabled={adults <= 1}
+                    onClick={() => bumpAdults(-1)}
+                  >−</button>
+                  <span className="counter-val">{adults}</span>
+                  <button
+                    className="counter-btn"
+                    type="button"
+                    aria-label="Increase adults"
+                    onClick={() => bumpAdults(1)}
+                  >+</button>
+                </div>
+              </div>
+              <div className="popover-row">
+                <div>
+                  <div className="popover-label-name">Children</div>
+                  <div className="popover-hint">Ages 2-12</div>
+                </div>
+                <div className="counter">
+                  <button
+                    className="counter-btn"
+                    type="button"
+                    aria-label="Decrease children"
+                    disabled={children <= 0}
+                    onClick={() => bumpChildren(-1)}
+                  >−</button>
+                  <span className="counter-val">{children}</span>
+                  <button
+                    className="counter-btn"
+                    type="button"
+                    aria-label="Increase children"
+                    onClick={() => bumpChildren(1)}
+                  >+</button>
+                </div>
+              </div>
+              <div className="popover-row">
+                <div>
+                  <div className="popover-label-name">Pets</div>
+                  <div className="popover-hint">Welcomed by request</div>
+                </div>
+                <label className="toggle-switch" aria-label="Allow pets">
+                  <input
+                    type="checkbox"
+                    checked={petsAllowed}
+                    onChange={(e) => setPetsAllowed(e.target.checked)}
+                  />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Bottom action bar */}
+      <div className="mobile-sheet-actions">
+        <button
+          type="button"
+          className="action-clear"
+          onClick={clearAll}
+        >
+          Clear all
+        </button>
+        <button
+          type="button"
+          className="action-show"
+          onClick={() => {
+            closeMobileSheet();
+            // Pulse the desktop submit even in mobile context for consistency
+            const btn = submitBtnRef.current;
+            if (btn) {
+              btn.classList.remove('is-pulse');
+              void btn.offsetWidth;
+              btn.classList.add('is-pulse');
+              setTimeout(() => btn.classList.remove('is-pulse'), 700);
+            }
+          }}
+        >
+          Show {placesCount} places
+        </button>
+      </div>
+    </div>
     </>
   );
 }
