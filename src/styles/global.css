@@ -2654,17 +2654,17 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   /* HERO RATING + old in-hero trust tag — both hidden on mobile */
   .hero-rating { display: none; }
   .hero-tag-mobile { display: none; }
-  /* KPI row at the bottom of the hero, white + bold */
+  /* KPI row at the bottom of the hero, white + bold, kept tightly grouped */
   .hero-kpis-mobile {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    grid-template-columns: repeat(3, auto);
+    justify-content: center;
+    column-gap: 28px;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     bottom: 36px;
-    width: calc(100% - 28px);
-    max-width: 380px;
+    width: auto;
     text-align: center;
     z-index: 3;
   }
