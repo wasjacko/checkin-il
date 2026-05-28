@@ -3196,10 +3196,12 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     color: #0E1322;
   }
 
-  /* ============ PICKS — editorial bento on mobile, full-bleed ============ */
+  /* ============ PICKS — editorial bento on mobile ============ */
   .picks {
     padding: 72px 0 80px;
-    margin: 48px 0;  /* clear whitespace from testimonial above + FAQ below */
+    margin: 48px 8px;       /* 8px lateral matches the hero image inset */
+    border-radius: 14px;
+    overflow: hidden;
   }
   .picks-header { margin-bottom: 36px; padding: 0 16px; }
   .picks-title { font-size: clamp(36px, 10vw, 48px); margin-top: 12px; }
@@ -3268,9 +3270,9 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
 
   /* ============ SUBMIT (navy card) — editorial mobile layout, sharp + luxe ============ */
   .submit {
-    width: calc(100% - 24px);
+    width: calc(100% - 16px);
     padding: 52px 0 56px;
-    border-radius: 8px; /* much less rounded — matches site rhythm */
+    border-radius: 14px;
   }
   .submit .wrap {
     grid-template-columns: 1fr;
@@ -3387,7 +3389,7 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
 
   /* ============ TESTIMONIAL ============ */
   .testimonial {
-    width: calc(100% - 24px);
+    width: calc(100% - 16px);
     padding: 48px 0 52px;
     border-radius: 14px;
     margin-top: 24px;
