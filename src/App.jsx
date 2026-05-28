@@ -31,18 +31,18 @@ export default function App() {
       {isMobile ? (
         <>
           <EveryRoom />
+          <Picks />
           <Alternating />
           <Testimonial />
-          <Picks />
           <Submit />
         </>
       ) : (
         <>
+          <Picks />
           <Alternating />
           <EveryRoom />
           <Submit />
           <Testimonial />
-          <Picks />
         </>
       )}
       <Faq />

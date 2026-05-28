@@ -3536,11 +3536,12 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     max-width: 360px;
   }
 
-  /* ============ SUBMIT (navy card) — image-anchored mobile stack ============ */
+  /* ============ SUBMIT (navy) — full-bleed host CTA on mobile ============ */
   .submit {
-    width: calc(100% - 12px);
-    padding: 22px 20px 32px;
-    border-radius: 12px;
+    width: 100%;            /* full-bleed, edge-to-edge */
+    margin: 0;              /* no lateral inset */
+    padding: 60px 24px clamp(64px, 9vh, 100px);
+    border-radius: 0;       /* edge-to-edge — no rounding */
     position: relative;
     overflow: hidden;
   }
