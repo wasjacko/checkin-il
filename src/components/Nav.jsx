@@ -20,19 +20,14 @@ export default function Nav() {
           </svg>
         </button>
         <a href="#submit" className="nav-host">Host with us</a>
-        <div className="nav-menu-pill">
-          <button
-            className="nav-burger"
-            type="button"
-            aria-label="Menu (coming soon)"
-            disabled
-          >
-            <span></span><span></span><span></span>
-          </button>
-          <span className="nav-avatar" aria-hidden="true">
-            <img src="/avatar1.png" alt="" />
-          </span>
-        </div>
+        <button
+          className="nav-burger"
+          type="button"
+          aria-label="Menu (coming soon)"
+          disabled
+        >
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </nav>
   );
