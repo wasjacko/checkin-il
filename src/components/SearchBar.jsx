@@ -690,13 +690,14 @@ export default function SearchBar() {
       </div>
     </form>
 
-    {/* ============ AI SEARCH — secondary affordance below the main search ============
-        Sparkle icon + "Describe your stay" — opens a sheet with a textarea. */}
+    {/* ============ AI SEARCH — aspirational benefit-led CTA ============
+        First-person wording sells the BENEFIT, not the tech. The arrow
+        signals "go" — together they invite the user to try the smarter route. */}
     <button
       type="button"
       className="search-ai-cta"
       onClick={() => setAiSheetOpen(true)}
-      aria-label="Search with AI by describing your stay"
+      aria-label="Find me my perfect place with AI"
     >
       <span className="ai-sparkle" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="currentColor">
@@ -704,7 +705,14 @@ export default function SearchBar() {
           <path d="M18 13 L18.7 15.8 21.5 16.5 L18.7 17.2 18 20 L17.3 17.2 14.5 16.5 L17.3 15.8 Z" />
         </svg>
       </span>
-      <span className="ai-cta-text">Describe your stay with AI</span>
+      <span className="ai-cta-text">
+        <span className="ai-cta-headline">Find me my perfect place</span>
+        <span className="ai-cta-sub">Search with AI</span>
+      </span>
+      <svg className="ai-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <line x1="5" y1="12" x2="19" y2="12" />
+        <polyline points="12 5 19 12 12 19" />
+      </svg>
     </button>
 
     {/* ============ MOBILE COMBINED SEARCH SHEET (portaled to body) ============
