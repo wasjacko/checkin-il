@@ -205,7 +205,11 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   transition: background .25s var(--ease);
   position: relative;
 }
-.nav-burger:hover { background: var(--navy-soft); }
+.nav-burger:hover:not(:disabled) { background: var(--navy-soft); }
+.nav-burger:disabled {
+  cursor: default;
+  opacity: 1; /* keep it visually identical — just inert */
+}
 .nav-burger span {
   position: absolute;
   left: 6px; right: 6px;
@@ -229,7 +233,7 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  /* No cursor:pointer — element is purely decorative for now */
 }
 .nav-avatar img {
   width: 100%; height: 100%;
