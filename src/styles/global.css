@@ -2670,17 +2670,17 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     text-shadow: 0 1px 8px rgba(10, 17, 36, 0.25);
     z-index: 3;
   }
-  /* KPI row — sits just above the trust tag, white + bigger but still soft */
+  /* KPI row — sits just above the trust tag, white + bold but still soft */
   .hero-kpis-mobile {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    gap: 12px;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    bottom: 78px;
-    width: calc(100% - 32px);
-    max-width: 360px;
+    bottom: 90px;
+    width: calc(100% - 28px);
+    max-width: 380px;
     text-align: center;
     z-index: 3;
   }
@@ -2688,18 +2688,18 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   .hero-kpi-val {
     font-family: var(--serif);
     font-weight: 400;
-    font-size: 34px;
+    font-size: 44px;
     line-height: 1;
     color: #FFFFFF;
     letter-spacing: -0.01em;
-    text-shadow: 0 1px 10px rgba(10, 17, 36, 0.28);
+    text-shadow: 0 1px 12px rgba(10, 17, 36, 0.3);
   }
   .hero-kpi-label {
-    margin-top: 6px;
+    margin-top: 8px;
     font-family: var(--sans);
-    font-size: 11.5px;
-    color: rgba(255, 255, 255, 0.82);
-    letter-spacing: 0.015em;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+    letter-spacing: 0.01em;
     text-shadow: 0 1px 6px rgba(10, 17, 36, 0.25);
   }
   /* Hide the dedicated Stats section on mobile — the hero now carries the KPIs */
