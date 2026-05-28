@@ -1027,9 +1027,7 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   gap: 10px;
   margin: 14px auto 0;
   padding: 11px 20px;
-  background: rgba(255, 255, 255, 0.7);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  background: #FFFFFF;
   border: 1px solid rgba(28, 46, 89, 0.10);
   border-radius: 10px;
   color: var(--navy);
@@ -1039,15 +1037,15 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   letter-spacing: 0.005em;
   cursor: pointer;
   transition:
-    background .25s var(--ease),
     border-color .25s var(--ease),
-    transform .15s var(--ease);
+    transform .15s var(--ease),
+    box-shadow .25s var(--ease);
   /* Center it via flex on the hero-inner */
   align-self: center;
 }
 .search-ai-cta:hover {
-  background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(28, 46, 89, 0.18);
+  border-color: rgba(28, 46, 89, 0.22);
+  box-shadow: 0 6px 18px -8px rgba(10, 17, 36, 0.18);
 }
 .search-ai-cta:active { transform: scale(0.98); }
 
