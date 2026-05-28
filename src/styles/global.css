@@ -1016,7 +1016,7 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
 .field-text { display: contents; }
 
 /* Mobile-only single-CTA + combined search sheet — hidden on desktop */
-.search-mobile-cta { display: none; }
+.search-mobile-cta-wrap { display: none; }
 .search-mobile-sheet { display: none; }
 
 
@@ -2252,21 +2252,44 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     gap: 0;
     margin-top: 48px;
   }
+  /* Make sure the mobile CTA wrap is visible on mobile */
+  .search-mobile-cta-wrap { display: flex; }
   /* Hide the 3 desktop fields and the desktop submit on mobile */
   .search > .search-field { display: none; }
   .search > .search-submit-wrap { display: none; }
-  /* The mobile CTA fills the whole bar */
+  /* Outer wrap — teal-40% gradient frame (identical to desktop) */
+  .search-mobile-cta-wrap {
+    display: flex;
+    width: 100%;
+    height: fit-content;
+    padding: 1.4px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(34, 193, 179, 0.4) 0%, rgba(1, 121, 111, 0.4) 100%);
+    margin: 0;
+    transition: transform .2s var(--ease);
+  }
+  .search-mobile-cta-wrap:active { transform: scale(0.985); }
+  /* Inner — teal-70% gradient frame (identical to desktop) */
+  .search-mobile-cta-inner {
+    display: flex;
+    width: 100%;
+    padding: 1.5px;
+    border-radius: 10.6px;
+    background: linear-gradient(180deg, rgba(34, 193, 179, 0.7) 0%, rgba(1, 121, 111, 0.7) 100%);
+  }
+  /* Navy button with the 3-stroke box-shadow frame (grey/white/grey).
+     Same exact stroke widths as the desktop submit (1.4 / 0.5 / 1.4). */
   .search-mobile-cta {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
     width: 100%;
-    padding: 18px 22px;
+    padding: 14px 22px;
     background: var(--navy);
     color: #FFFFFF;
     border: 0;
-    border-radius: 10px;
+    border-radius: 5.8px;
     font-family: var(--sans);
     font-size: 14px;
     font-weight: 600;
@@ -2277,11 +2300,10 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
       0 0 0 3.3px #F3F4F6;
     margin: 3.3px;
     cursor: pointer;
-    transition: background .25s var(--ease), transform .15s var(--ease);
+    transition: background .25s var(--ease);
   }
   .search-mobile-cta:hover { background: var(--navy-soft); }
-  .search-mobile-cta:active { transform: scale(0.98); }
-  .search-mobile-cta svg { width: 22px; height: 22px; }
+  .search-mobile-cta svg { width: 22px; height: 22px; stroke-width: 2; }
   .search-field {
     width: 100%;
     padding: 14px 16px;

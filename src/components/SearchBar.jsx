@@ -282,19 +282,26 @@ export default function SearchBar() {
       onSubmit={onSubmit}
     >
       {/* Mobile-only: single CTA that opens the combined search sheet.
+          Mirrors the desktop button structure exactly:
+          outer wrap (teal-40% gradient) → inner (teal-70% gradient) → navy
+          button with 3 box-shadow strokes (grey/white/grey).
           Hidden on desktop via CSS. */}
-      <button
-        type="button"
-        className="search-mobile-cta"
-        onClick={openMobileSheet}
-        aria-label="Search residences"
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <circle cx="11" cy="11" r="6" />
-          <path d="m20 20-4.5-4.5" />
-        </svg>
-        <span>Search</span>
-      </button>
+      <div className="search-mobile-cta-wrap">
+        <div className="search-mobile-cta-inner">
+          <button
+            type="button"
+            className="search-mobile-cta"
+            onClick={openMobileSheet}
+            aria-label="Search residences"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="6" />
+              <path d="m20 20-4.5-4.5" />
+            </svg>
+            <span>Search</span>
+          </button>
+        </div>
+      </div>
 
       {/* DESTINATION */}
       <div
