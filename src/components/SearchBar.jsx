@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 const ALL_DESTS = [
   { value: 'tel-aviv', name: 'Tel Aviv', img: '/telaviv.jpg' },
@@ -70,6 +71,8 @@ export default function SearchBar() {
   // mobileStep: which step is expanded — 'dest' | 'date' | 'guests'
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
   const [mobileStep, setMobileStep] = useState('dest');
+  // Error state for the "Show N places" action when destination is missing
+  const [mobileError, setMobileError] = useState(null);  // null | 'no-dest'
 
   // Close popovers when clicking outside
   useEffect(() => {
@@ -173,6 +176,10 @@ export default function SearchBar() {
     if (startDate && endDate) setDateDisplay(fmtDate(startDate) + ' — ' + fmtDate(endDate));
     else if (startDate) setDateDisplay(fmtDate(startDate) + ' — ?');
     else if (dateDisplay !== 'Open dates') setDateDisplay('Choose your nights');
+    // Auto-advance to Guests step once a full range is set on mobile
+    if (startDate && endDate && mobileSheetOpen && mobileStep === 'date') {
+      setMobileStep('guests');
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate, endDate]);
 
@@ -266,17 +273,6 @@ export default function SearchBar() {
 
   return (
     <>
-      {/* Mobile-only backdrop behind any open sheet. Tap to close. */}
-      {(openField || mobileSheetOpen) && (
-        <div
-          className="sheet-backdrop"
-          onClick={() => {
-            setOpenField(null);
-            setMobileSheetOpen(false);
-          }}
-          aria-hidden="true"
-        />
-      )}
     <form
       ref={formRef}
       className="search"
@@ -663,20 +659,54 @@ export default function SearchBar() {
       </div>
     </form>
 
-    {/* ============ MOBILE COMBINED SEARCH SHEET ============
+    {/* ============ MOBILE COMBINED SEARCH SHEET (portaled to body) ============
         One sheet, 3 accordion rows. Only the active step shows its content.
-        Hidden on desktop via CSS. */}
-    <div
-      className={'search-mobile-sheet' + (mobileSheetOpen ? ' open' : '')}
-      role="dialog"
-      aria-label="Search residences"
-      aria-modal="true"
-    >
-      <span className="mobile-sheet-grabber" aria-hidden="true" />
+        Rendered via createPortal so it sits ABOVE every stacking context
+        on the page (nav, hero, etc.). Hidden on desktop via CSS. */}
+    {createPortal(
+      <>
+        {(openField || mobileSheetOpen) && (
+          <div
+            className="sheet-backdrop sheet-backdrop-top"
+            onClick={() => {
+              setOpenField(null);
+              setMobileSheetOpen(false);
+              setMobileError(null);
+            }}
+            aria-hidden="true"
+          />
+        )}
+        <div
+          className={'search-mobile-sheet' + (mobileSheetOpen ? ' open' : '')}
+          role="dialog"
+          aria-label="Search residences"
+          aria-modal="true"
+        >
+          <div className="mobile-sheet-top">
+            <span className="mobile-sheet-grabber" aria-hidden="true" />
+            <button
+              type="button"
+              className="mobile-sheet-close"
+              onClick={() => {
+                setMobileSheetOpen(false);
+                setMobileError(null);
+              }}
+              aria-label="Close"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
 
       <div className="mobile-sheet-scroll">
         {/* ---- DESTINATION ---- */}
-        <div className={'mobile-step' + (mobileStep === 'dest' ? ' is-active' : '')}>
+        <div className={
+          'mobile-step'
+          + (mobileStep === 'dest' ? ' is-active' : '')
+          + (mobileError === 'no-dest' ? ' has-error' : '')
+        }>
           <button
             type="button"
             className="mobile-step-header"
@@ -705,6 +735,7 @@ export default function SearchBar() {
                   onChange={(e) => {
                     setDestInputValue(e.target.value);
                     setDestQuery(e.target.value);
+                    if (mobileError) setMobileError(null);
                   }}
                   autoComplete="off"
                 />
@@ -939,8 +970,16 @@ export default function SearchBar() {
           type="button"
           className="action-show"
           onClick={() => {
+            // Validation: a destination is required to "search"
+            if (!destInputValue.trim()) {
+              setMobileError('no-dest');
+              setMobileStep('dest');
+              // shake animation hook — reset then re-apply
+              setTimeout(() => setMobileError((cur) => (cur === 'no-dest' ? 'no-dest' : null)), 0);
+              return;
+            }
+            setMobileError(null);
             closeMobileSheet();
-            // Pulse the desktop submit even in mobile context for consistency
             const btn = submitBtnRef.current;
             if (btn) {
               btn.classList.remove('is-pulse');
@@ -953,7 +992,20 @@ export default function SearchBar() {
           Show {placesCount} places
         </button>
       </div>
+      {mobileError === 'no-dest' && (
+        <div className="mobile-sheet-error" role="alert">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <circle cx="12" cy="16" r="0.5" fill="currentColor" />
+          </svg>
+          <span>Choose a destination first.</span>
+        </div>
+      )}
     </div>
+    </>,
+    document.body
+    )}
     </>
   );
 }
