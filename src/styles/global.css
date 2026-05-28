@@ -1044,10 +1044,10 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   background: linear-gradient(180deg, rgba(34, 193, 179, 0.7) 0%, rgba(1, 121, 111, 0.7) 100%);
 }
 .search-ai-cta {
-  display: inline-flex;
+  position: relative;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
   width: 100%;
   padding: 14px 22px;
   background: #FFFFFF;
@@ -1068,10 +1068,13 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
 }
 .search-ai-cta:hover { background: #FAF4E6; }
 .search-ai-cta .ai-sparkle {
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  transform: translateY(-50%);
   width: 20px;
   height: 20px;
   color: var(--accent-script);
-  flex-shrink: 0;
 }
 .search-ai-cta .ai-sparkle svg {
   animation: aiSparkle 3.6s ease-in-out infinite;
@@ -2513,12 +2516,14 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     background: linear-gradient(180deg, rgba(34, 193, 179, 0.7) 0%, rgba(1, 121, 111, 0.7) 100%);
   }
   /* Navy button with the 3-stroke box-shadow frame (grey/white/grey).
-     Same exact stroke widths as the desktop submit (1.4 / 0.5 / 1.4). */
+     Same exact stroke widths as the desktop submit (1.4 / 0.5 / 1.4).
+     Icon absolute-positioned on the left so the text stays VISUALLY
+     centered (not just centered-with-icon as a group). */
   .search-mobile-cta {
-    display: inline-flex;
+    position: relative;
+    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
     width: 100%;
     padding: 14px 22px;
     background: var(--navy);
@@ -2538,7 +2543,15 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     transition: background .25s var(--ease);
   }
   .search-mobile-cta:hover { background: var(--navy-soft); }
-  .search-mobile-cta svg { width: 22px; height: 22px; stroke-width: 2; }
+  .search-mobile-cta svg {
+    position: absolute;
+    left: 22px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    stroke-width: 2;
+  }
   .search-field {
     width: 100%;
     padding: 14px 16px;
