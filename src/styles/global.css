@@ -2659,7 +2659,7 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     display: grid;
     grid-template-columns: repeat(3, auto);
     justify-content: center;
-    column-gap: 28px;
+    column-gap: 44px;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
