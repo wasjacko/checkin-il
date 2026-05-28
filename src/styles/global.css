@@ -1032,8 +1032,7 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   background: linear-gradient(180deg, rgba(34, 193, 179, 0.4) 0%, rgba(1, 121, 111, 0.4) 100%);
   margin: 12px auto 0;
   align-self: center;
-  /* On desktop the AI button sits at the same width as the main search button */
-  max-width: 360px;
+  max-width: 300px;
   transition: transform .2s var(--ease);
 }
 .search-ai-cta-wrap:active { transform: scale(0.985); }
@@ -2479,12 +2478,16 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     gap: 0;
     margin-top: 48px;
   }
-  /* Make sure the mobile CTA wrap is visible on mobile */
-  .search-mobile-cta-wrap { display: flex; }
-  /* AI CTA: full-width on mobile (matches the main search button) */
+  /* Make sure the mobile CTA wrap is visible on mobile + cap width */
+  .search-mobile-cta-wrap {
+    display: flex;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  /* AI CTA: same capped width as the main CTA, centered */
   .search-ai-cta-wrap {
-    max-width: 100%;
-    margin-top: 12px;
+    max-width: 300px;
+    margin: 12px auto 0;
   }
   /* Hide the 3 desktop fields and the desktop submit on mobile */
   .search > .search-field { display: none; }
