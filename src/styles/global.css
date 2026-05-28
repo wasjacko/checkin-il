@@ -2678,7 +2678,6 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     background: var(--bg);
     color: var(--navy);
     text-align: center;
-    border-bottom: 1px solid var(--line-cool);
   }
   .hero-trust-strip .trust-stars {
     font-size: 13px;
