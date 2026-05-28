@@ -2498,25 +2498,24 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   /* Hide the 3 desktop fields and the desktop submit on mobile */
   .search > .search-field { display: none; }
   .search > .search-submit-wrap { display: none; }
-  /* Outer wrap — teal-40% gradient frame (identical to desktop) */
+  /* Wrap — no teal gradient frame on mobile (cleaner, no green border) */
   .search-mobile-cta-wrap {
     display: flex;
     width: 100%;
     height: fit-content;
-    padding: 1.4px;
-    border-radius: 12px;
-    background: linear-gradient(180deg, rgba(34, 193, 179, 0.4) 0%, rgba(1, 121, 111, 0.4) 100%);
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
     margin: 0;
     transition: transform .2s var(--ease);
   }
   .search-mobile-cta-wrap:active { transform: scale(0.985); }
-  /* Inner — teal-70% gradient frame (identical to desktop) */
   .search-mobile-cta-inner {
     display: flex;
     width: 100%;
-    padding: 1.5px;
-    border-radius: 10.6px;
-    background: linear-gradient(180deg, rgba(34, 193, 179, 0.7) 0%, rgba(1, 121, 111, 0.7) 100%);
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
   }
   /* Navy button with the 3-stroke box-shadow frame (grey/white/grey).
      Same exact stroke widths as the desktop submit (1.4 / 0.5 / 1.4).
