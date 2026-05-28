@@ -1019,65 +1019,65 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
 .search-mobile-cta-wrap { display: none; }
 .search-mobile-sheet { display: none; }
 
-/* ============ AI SEARCH CTA — secondary affordance below the main search ============ */
+/* ============ AI SEARCH CTA — mirror of the main search button ============
+   Same nested structure (teal-40% wrap → teal-70% inner → button w/ 3-stroke
+   box-shadow), just with a WHITE button instead of navy. Visual twin so both
+   read as equal-weight entry points to the search experience. */
+.search-ai-cta-wrap {
+  display: flex;
+  width: 100%;
+  height: fit-content;
+  padding: 1.4px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(34, 193, 179, 0.4) 0%, rgba(1, 121, 111, 0.4) 100%);
+  margin: 12px auto 0;
+  align-self: center;
+  /* On desktop the AI button sits at the same width as the main search button */
+  max-width: 360px;
+  transition: transform .2s var(--ease);
+}
+.search-ai-cta-wrap:active { transform: scale(0.985); }
+.search-ai-cta-inner {
+  display: flex;
+  width: 100%;
+  padding: 1.5px;
+  border-radius: 10.6px;
+  background: linear-gradient(180deg, rgba(34, 193, 179, 0.7) 0%, rgba(1, 121, 111, 0.7) 100%);
+}
 .search-ai-cta {
   display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  margin: 16px auto 0;
-  padding: 12px 18px 12px 16px;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 22px;
   background: #FFFFFF;
-  border: 1px solid rgba(28, 46, 89, 0.12);
-  border-radius: 10px;
   color: var(--navy);
+  border: 0;
+  border-radius: 5.8px;
   font-family: var(--sans);
-  cursor: pointer;
-  text-align: left;
-  /* Subtle outer glow on idle to hint at "feature highlight" */
-  box-shadow: 0 6px 18px -10px rgba(93, 181, 164, 0.35);
-  transition:
-    border-color .25s var(--ease),
-    transform .15s var(--ease),
-    box-shadow .25s var(--ease);
-  align-self: center;
-  /* On desktop the button sits wide enough to feel like a real CTA */
-  min-width: 320px;
-}
-.ai-cta-text {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  flex: 1;
-}
-.ai-cta-headline {
   font-size: 14px;
   font-weight: 600;
-  letter-spacing: -0.005em;
-  color: var(--navy);
+  letter-spacing: 0.04em;
+  box-shadow:
+    0 0 0 1.4px #F3F4F6,
+    0 0 0 1.9px #FFFFFF,
+    0 0 0 3.3px #F3F4F6;
+  margin: 3.3px;
+  cursor: pointer;
+  transition: background .25s var(--ease);
 }
-.ai-cta-sub {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(28, 46, 89, 0.5);
-}
-.ai-cta-arrow {
-  width: 16px;
-  height: 16px;
-  color: var(--navy);
+.search-ai-cta:hover { background: #FAF4E6; }
+.search-ai-cta .ai-sparkle {
+  width: 20px;
+  height: 20px;
+  color: var(--accent-script);
   flex-shrink: 0;
-  transition: transform .3s var(--ease-luxe);
 }
-.search-ai-cta:hover {
-  border-color: rgba(28, 46, 89, 0.22);
-  box-shadow: 0 10px 28px -10px rgba(93, 181, 164, 0.55);
+.search-ai-cta .ai-sparkle svg {
+  animation: aiSparkle 3.6s ease-in-out infinite;
+  transform-origin: center;
 }
-.search-ai-cta:hover .ai-cta-arrow {
-  transform: translateX(4px);
-}
-.search-ai-cta:active { transform: scale(0.99); }
 
 /* The sparkle icon — small + secondary, both in a teal-gradient color */
 .ai-sparkle {
@@ -2481,15 +2481,11 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   }
   /* Make sure the mobile CTA wrap is visible on mobile */
   .search-mobile-cta-wrap { display: flex; }
-  /* AI CTA on mobile: same width as the main search button — sits right below */
-  .search-ai-cta {
-    width: 100%;
-    min-width: 0;
-    margin-top: 14px;
-    padding: 14px 18px;
+  /* AI CTA: full-width on mobile (matches the main search button) */
+  .search-ai-cta-wrap {
+    max-width: 100%;
+    margin-top: 12px;
   }
-  .ai-cta-headline { font-size: 14.5px; }
-  .ai-cta-sub { font-size: 10.5px; letter-spacing: 0.20em; }
   /* Hide the 3 desktop fields and the desktop submit on mobile */
   .search > .search-field { display: none; }
   .search > .search-submit-wrap { display: none; }

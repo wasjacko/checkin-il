@@ -316,13 +316,13 @@ export default function SearchBar() {
             type="button"
             className="search-mobile-cta"
             onClick={openMobileSheet}
-            aria-label="Search residences"
+            aria-label="Classic search by destination, dates and guests"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <circle cx="11" cy="11" r="6" />
               <path d="m20 20-4.5-4.5" />
             </svg>
-            <span>Search</span>
+            <span>Classic search</span>
           </button>
         </div>
       </div>
@@ -690,30 +690,29 @@ export default function SearchBar() {
       </div>
     </form>
 
-    {/* ============ AI SEARCH — aspirational benefit-led CTA ============
-        First-person wording sells the BENEFIT, not the tech. The arrow
-        signals "go" — together they invite the user to try the smarter route. */}
-    <button
-      type="button"
-      className="search-ai-cta"
-      onClick={() => setAiSheetOpen(true)}
-      aria-label="Find me my perfect place with AI"
-    >
-      <span className="ai-sparkle" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M10 2 L11.4 7.6 17 9 L11.4 10.4 10 16 L8.6 10.4 3 9 L8.6 7.6 Z" />
-          <path d="M18 13 L18.7 15.8 21.5 16.5 L18.7 17.2 18 20 L17.3 17.2 14.5 16.5 L17.3 15.8 Z" />
-        </svg>
-      </span>
-      <span className="ai-cta-text">
-        <span className="ai-cta-headline">Find me my perfect place</span>
-        <span className="ai-cta-sub">Search with AI</span>
-      </span>
-      <svg className="ai-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <line x1="5" y1="12" x2="19" y2="12" />
-        <polyline points="12 5 19 12 12 19" />
-      </svg>
-    </button>
+    {/* ============ AI SEARCH — mirror of the main CTA, white variant ============
+        Same nested teal-gradient wrap + box-shadow strokes as the classic
+        search button — just inverted (white bg instead of navy). One single
+        centered text, sparkle icon. The visual twin = both feel like equal
+        first-class entry points to the search experience. */}
+    <div className="search-ai-cta-wrap">
+      <div className="search-ai-cta-inner">
+        <button
+          type="button"
+          className="search-ai-cta"
+          onClick={() => setAiSheetOpen(true)}
+          aria-label="Find me the perfect place with AI"
+        >
+          <span className="ai-sparkle" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M10 2 L11.4 7.6 17 9 L11.4 10.4 10 16 L8.6 10.4 3 9 L8.6 7.6 Z" />
+              <path d="M18 13 L18.7 15.8 21.5 16.5 L18.7 17.2 18 20 L17.3 17.2 14.5 16.5 L17.3 15.8 Z" />
+            </svg>
+          </span>
+          <span>Or find me the perfect place</span>
+        </button>
+      </div>
+    </div>
 
     {/* ============ MOBILE COMBINED SEARCH SHEET (portaled to body) ============
         One sheet, 3 accordion rows. Only the active step shows its content.
