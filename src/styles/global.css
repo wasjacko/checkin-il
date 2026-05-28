@@ -2423,11 +2423,6 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
 
 /* ===================  MOBILE  =================== */
 @media (max-width: 720px) {
-  /* Subtle cream backdrop on the body so the 8px section margins are
-     visible as a thin frame around each card (matches the hero image
-     lateral inset). */
-  body { background: var(--bg-cream-soft); }
-
   /* HERO — a bit less than full viewport, leaves room for a trust strip
      just below. Image fills with nice rounded borders. */
   .hero {
@@ -2672,18 +2667,16 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     text-align: center;
     z-index: 3;
   }
-  /* Trust strip just BELOW the hero, framed like the hero image */
+  /* Trust strip just BELOW the hero — plain white, edge-to-edge */
   .hero-trust-strip {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
-    margin: 6px 8px 0;
     padding: 20px 16px;
-    background: var(--bg-cream-soft);
+    background: var(--bg);
     color: var(--navy);
     text-align: center;
-    border-radius: 14px;
   }
   .hero-trust-strip .trust-stars {
     font-size: 13px;
@@ -2717,18 +2710,6 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   }
   /* Hide the dedicated Stats section on mobile — the hero now carries the KPIs */
   section.stats { display: none; }
-
-  /* Apply the hero's 8px inset to every other section so the page reads as
-     a stack of consistently-framed cards on a cream backdrop. */
-  section.ultima,
-  section.alternating,
-  section.everyroom,
-  section.faq {
-    margin-left: 8px;
-    margin-right: 8px;
-    border-radius: 14px;
-    background: var(--bg);
-  }
 
   /* Nav — smaller logo, tighter horizontal placement (logo right, burger left) */
   .nav {
