@@ -1007,6 +1007,8 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
 .hero-tag-mobile { display: none; }
 /* Mobile-only KPI row in the hero (replaces the Stats section on small screens) */
 .hero-kpis-mobile { display: none; }
+/* Mobile-only trust strip — visible below the hero on mobile only */
+.hero-trust-strip { display: none; }
 
 /* Field icon (pin/calendar/users) + chevron — hidden on desktop, shown on mobile */
 .field-icon, .field-chevron { display: none; }
@@ -2421,13 +2423,12 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
 
 /* ===================  MOBILE  =================== */
 @media (max-width: 720px) {
-  /* HERO — exactly one viewport, image fills with nice rounded borders,
-     title sits a bit below the nav, search bar pushed to the thumb zone
-     (bottom third) close to the trust tag. */
+  /* HERO — a bit less than full viewport, leaves room for a trust strip
+     just below. Image fills with nice rounded borders. */
   .hero {
-    height: 100dvh;
-    min-height: 100dvh;
-    padding: 78px 16px 76px;
+    height: 86dvh;
+    min-height: 560px;
+    padding: 78px 16px 52px;
     box-sizing: border-box;
     overflow: hidden;
   }
@@ -2650,27 +2651,10 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   }
   .search-submit svg { width: 18px; height: 18px; }
 
-  /* HERO RATING — hidden on mobile, replaced by a single line of proof text below */
+  /* HERO RATING + old in-hero trust tag — both hidden on mobile */
   .hero-rating { display: none; }
-  .hero-tag-mobile {
-    display: block;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: 28px;
-    width: calc(100% - 40px);
-    max-width: 320px;
-    text-align: center;
-    font-family: var(--sans);
-    font-size: 13px;
-    font-weight: 500;
-    color: #FFFFFF;
-    line-height: 1.4;
-    letter-spacing: -0.005em;
-    text-shadow: 0 1px 8px rgba(10, 17, 36, 0.25);
-    z-index: 3;
-  }
-  /* KPI row — sits just above the trust tag, white + bold but still soft */
+  .hero-tag-mobile { display: none; }
+  /* KPI row at the bottom of the hero, white + bold */
   .hero-kpis-mobile {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -2678,11 +2662,35 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    bottom: 90px;
+    bottom: 36px;
     width: calc(100% - 28px);
     max-width: 380px;
     text-align: center;
     z-index: 3;
+  }
+  /* Trust strip just BELOW the hero, on the page background */
+  .hero-trust-strip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 22px 16px;
+    background: var(--bg);
+    color: var(--navy);
+    text-align: center;
+    border-bottom: 1px solid var(--line-cool);
+  }
+  .hero-trust-strip .trust-stars {
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: var(--navy);
+  }
+  .hero-trust-strip .trust-text {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--navy);
+    letter-spacing: -0.005em;
   }
   .hero-kpi { display: flex; flex-direction: column; align-items: center; }
   .hero-kpi-val {

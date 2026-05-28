@@ -2,6 +2,7 @@ import SearchBar from './SearchBar.jsx';
 
 export default function Hero() {
   return (
+    <>
     <header className="hero" id="top">
       <div className="hero-image">
         <img
@@ -50,7 +51,7 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Mobile-only KPI row, sits just above the trust tag */}
+      {/* Mobile-only KPI row, bottom of the hero */}
       <div className="hero-kpis-mobile" aria-hidden="true">
         <div className="hero-kpi">
           <span className="hero-kpi-val">120+</span>
@@ -65,11 +66,13 @@ export default function Hero() {
           <span className="hero-kpi-label">Years curating</span>
         </div>
       </div>
-
-      {/* Mobile-only — a quiet line of proof in place of the avatar block */}
-      <p className="hero-tag-mobile">
-        ★★★★★ &nbsp; Trusted by 3,000+ returning guests
-      </p>
     </header>
+
+    {/* Mobile-only trust strip — sits just below the hero, on the page bg */}
+    <div className="hero-trust-strip">
+      <span className="trust-stars" aria-hidden="true">★★★★★</span>
+      <span className="trust-text">Trusted by 3,000+ returning guests</span>
+    </div>
+    </>
   );
 }
