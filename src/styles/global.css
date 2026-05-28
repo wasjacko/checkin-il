@@ -2186,18 +2186,36 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
 
 /* ===================  MOBILE  =================== */
 @media (max-width: 720px) {
-  /* HERO — tighter rhythm, hero fills viewport once with sea of content below */
+  /* HERO — exactly one viewport, image fills with nice rounded borders,
+     title sits a bit below the nav, search bar pushed to the thumb zone
+     (bottom third) close to the trust tag. */
   .hero {
+    height: 100dvh;
     min-height: 100dvh;
-    padding: 96px 16px 110px;
+    padding: 78px 16px 76px;
+    box-sizing: border-box;
+    overflow: hidden;
   }
   .hero-image {
     inset: 6px;
     border-radius: 14px;
   }
   .hero-inner {
-    margin-top: clamp(16px, 5vh, 40px);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 0;
+    padding-top: 12vh;        /* title pushed down ~12% of viewport */
     max-width: 100%;
+  }
+  /* Push the search bar to the bottom of the available space */
+  .search {
+    margin-top: auto;
+    margin-bottom: 0;
+  }
+  .hero-tag-mobile {
+    bottom: 28px;
   }
   .hero-title {
     font-size: clamp(42px, 11vw, 56px);
