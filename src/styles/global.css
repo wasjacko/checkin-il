@@ -261,6 +261,7 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   border-radius: 16px;
   overflow: hidden;
 }
+.hero-image picture { display: block; width: 100%; height: 100%; }
 .hero-image img {
   width: 100%; height: 100%;
   object-fit: cover;
@@ -1121,21 +1122,6 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   transform: translateY(0);
   opacity: 1;
 }
-.ai-sheet-content {
-  flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 16px 26px max(20px, env(safe-area-inset-bottom));
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-}
-.ai-sheet-header {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-}
 .ai-sparkle.ai-sparkle-lg {
   width: 36px;
   height: 36px;
@@ -1147,102 +1133,414 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
 .ai-sparkle.ai-sparkle-lg svg {
   animation: aiSparkle 2.8s ease-in-out infinite;
 }
-.ai-sheet-title {
+/* ===================  AI CHAT SHEET  ===================
+   Conversational "Chat with AI" bottom sheet (mobile). Reuses the
+   .search-ai-sheet shell for the slide-up + z-index, then lays out a
+   3-zone flex column: fixed top bar · scrolling body · fixed input bar.
+   Accent harmonised to the brand teal (--teal). */
+.aichat-sheet {
+  padding: 0;
+  /* Anchor to a small top gap and the keyboard line; height is derived from
+     top↔bottom so the input bar always rides just above the soft keyboard
+     (--kb is set live from visualViewport). Body scrolls; chrome stays put. */
+  top: max(10px, env(safe-area-inset-top));
+  bottom: var(--kb, 0px);
+  max-height: none;
+}
+
+/* ---- top bar ---- */
+.aichat-top {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 12px 10px;
+  border-bottom: 1px solid rgba(28, 46, 89, 0.08);
+}
+.aichat-top .mobile-sheet-grabber {
+  width: 38px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(28, 46, 89, 0.18);
+  margin-bottom: 12px;
+}
+.aichat-titlebar {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+}
+.aichat-title {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--navy);
+  letter-spacing: -0.01em;
+}
+.aichat-close {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(28, 46, 89, 0.06);
+  color: var(--navy);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: background .2s, transform .12s;
+}
+.aichat-close:active { transform: translateY(-50%) scale(0.92); }
+.aichat-close svg { width: 16px; height: 16px; }
+
+/* ---- scrolling body ---- */
+.aichat-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding: 4px 16px 8px;
+}
+
+/* ---- empty state ---- */
+.aichat-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 34px 4px 8px;
+}
+.ai-sparkle.aichat-badge {
+  width: 56px;
+  height: 56px;
+  padding: 13px;
+  margin-bottom: 18px;
+}
+.aichat-empty-title {
   font-family: var(--serif);
   font-style: italic;
   font-weight: 500;
-  font-size: 26px;
+  font-size: 27px;
+  line-height: 1.14;
   color: var(--navy);
-  letter-spacing: -0.005em;
-  line-height: 1.1;
+  max-width: 15ch;
+  margin: 0 0 26px;
+  text-wrap: balance;
 }
-.ai-sheet-subtitle {
-  font-family: var(--sans);
-  font-size: 14.5px;
-  line-height: 1.55;
-  color: var(--text-muted);
-  margin: 0;
-}
-.ai-sheet-textarea {
+.aichat-suggestions {
   width: 100%;
-  resize: vertical;
-  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.aichat-suggestion {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
   padding: 14px 16px;
-  background: var(--bg-cream-soft);
+  background: #FFFFFF;
   border: 1px solid rgba(28, 46, 89, 0.12);
-  border-radius: 12px;
+  border-radius: 14px;
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.35;
+  color: var(--navy);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: border-color .2s, background .2s, transform .12s;
+}
+.aichat-suggestion:active { transform: scale(0.99); }
+.aichat-suggestion.is-active {
+  border-color: var(--teal);
+  background: rgba(93, 181, 164, 0.07);
+}
+.aichat-suggestion-ico {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: rgba(93, 181, 164, 0.12);
+  color: var(--teal);
+}
+.aichat-suggestion-ico svg { width: 19px; height: 19px; }
+.aichat-suggestion-txt { flex: 1; min-width: 0; }
+
+/* ---- conversation ---- */
+.aichat-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 0 8px;
+}
+.aichat-msg {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+}
+.aichat-msg-user { align-items: flex-end; }
+.aichat-msg-ai { align-items: flex-start; }
+.aichat-bubble {
+  max-width: 82%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+.aichat-msg-user .aichat-bubble {
+  background: var(--navy);
+  color: #FFFFFF;
+  border-bottom-right-radius: 6px;
+}
+.aichat-msg-ai .aichat-bubble {
+  background: #F1F2F4;
+  color: var(--navy);
+  border-bottom-left-radius: 6px;
+}
+
+/* typing indicator */
+.aichat-typing {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 15px 16px;
+}
+.aichat-typing span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(28, 46, 89, 0.4);
+  animation: aichatTyping 1.2s ease-in-out infinite;
+}
+.aichat-typing span:nth-child(2) { animation-delay: .15s; }
+.aichat-typing span:nth-child(3) { animation-delay: .3s; }
+@keyframes aichatTyping {
+  0%, 60%, 100% { transform: translateY(0); opacity: .4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* property-card carousel */
+.aichat-cards {
+  align-self: stretch;
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  padding-bottom: 2px;
+}
+.aichat-cards::-webkit-scrollbar { display: none; }
+.aichat-card {
+  flex: 0 0 auto;
+  width: 198px;
+  scroll-snap-align: start;
+  background: #FFFFFF;
+  border: 1px solid rgba(28, 46, 89, 0.10);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 22px -16px rgba(10, 17, 36, 0.40);
+}
+.aichat-card-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: var(--bg-cream-soft);
+}
+.aichat-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.aichat-card-heart {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--navy);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.aichat-card-heart svg { width: 16px; height: 16px; }
+.aichat-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px 12px;
+}
+.aichat-card-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.aichat-card-name {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--navy);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.aichat-card-rating {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  color: var(--navy);
+}
+.aichat-card-rating svg { width: 11px; height: 11px; color: var(--teal); }
+.aichat-card-loc {
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+.aichat-card-price {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.aichat-card-price strong { color: var(--navy); font-weight: 700; }
+
+/* ---- input bar ---- */
+.aichat-inputbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px max(12px, env(safe-area-inset-bottom));
+  border-top: 1px solid rgba(28, 46, 89, 0.08);
+  background: #FFFFFF;
+}
+.aichat-input {
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+  padding: 0 18px;
+  background: var(--bg-cream-soft);
+  border: 1px solid rgba(28, 46, 89, 0.10);
+  border-radius: 999px;
   font-family: var(--sans);
   font-size: 16px;
-  line-height: 1.5;
   color: var(--navy);
   outline: none;
   transition: border-color .2s, background .2s;
 }
-.ai-sheet-textarea::placeholder {
-  color: rgba(28, 46, 89, 0.4);
-}
-.ai-sheet-textarea:focus {
-  border-color: var(--accent-script);
-  background: #FFFFFF;
-}
-.ai-sheet-suggestions {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.ai-sheet-suggestions-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.20em;
-  text-transform: uppercase;
-  color: rgba(28, 46, 89, 0.5);
-}
-.ai-sheet-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.ai-sheet-chip {
-  padding: 8px 14px;
-  background: rgba(28, 46, 89, 0.04);
-  border: 1px solid rgba(28, 46, 89, 0.08);
+.aichat-input::placeholder { color: rgba(28, 46, 89, 0.42); }
+.aichat-input:focus { border-color: var(--teal); background: #FFFFFF; }
+.aichat-mic,
+.aichat-send {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border: 0;
   border-radius: 999px;
-  font-family: var(--sans);
-  font-size: 12.5px;
-  color: var(--navy);
   cursor: pointer;
-  transition: background .2s, border-color .2s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: background .2s, color .2s, transform .12s;
 }
-.ai-sheet-chip:hover {
-  background: rgba(28, 46, 89, 0.08);
-  border-color: rgba(28, 46, 89, 0.18);
+.aichat-mic {
+  background: rgba(28, 46, 89, 0.06);
+  color: var(--navy);
 }
-.ai-sheet-submit {
-  display: inline-flex;
+.aichat-mic:active { transform: scale(0.94); }
+.aichat-mic svg { width: 22px; height: 22px; }
+.aichat-send {
+  background: rgba(28, 46, 89, 0.10);
+  color: rgba(28, 46, 89, 0.40);
+}
+.aichat-send.is-active {
+  background: var(--teal);
+  color: #FFFFFF;
+}
+.aichat-send.is-active:active { transform: scale(0.94); }
+.aichat-send svg { width: 22px; height: 22px; }
+.aichat-send:disabled { cursor: default; }
+
+/* ---- voice recording state ---- */
+.aichat-recdot {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.aichat-recdot-core {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--teal);
+  animation: aichatRec 1.4s ease-in-out infinite;
+}
+@keyframes aichatRec {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .4; transform: scale(0.82); }
+}
+.aichat-wave {
+  flex: 1;
+  min-width: 0;
+  height: 38px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  width: 100%;
-  padding: 16px 22px;
-  background: var(--navy);
-  color: #FFFFFF;
-  border: 0;
-  border-radius: 10px;
-  font-family: var(--sans);
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-  transition: background .25s var(--ease), transform .15s var(--ease);
-  margin-top: 4px;
+  gap: 3px;
+  overflow: hidden;
 }
-.ai-sheet-submit:hover:not(:disabled) { background: var(--navy-soft); }
-.ai-sheet-submit:active:not(:disabled) { transform: scale(0.99); }
-.ai-sheet-submit:disabled {
-  background: rgba(28, 46, 89, 0.25);
-  cursor: not-allowed;
+.aichat-wave span {
+  flex: 0 0 auto;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--teal);
+  transform-origin: center;
+  animation: aichatWave 0.9s ease-in-out infinite;
 }
-.ai-sheet-submit svg { width: 16px; height: 16px; }
+@keyframes aichatWave {
+  0%, 100% { transform: scaleY(0.38); opacity: .5; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aichat-typing span,
+  .aichat-wave span,
+  .aichat-recdot-core,
+  .ai-sparkle.aichat-badge svg {
+    animation: none !important;
+  }
+}
 
 
 /* ===================  STATS  =================== */
@@ -1618,12 +1916,12 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   background: #0E1322;
 }
 .alt-card-media::after {
-  /* Subtle top gradient so the white overlay text stays readable on any image */
+  /* Bottom gradient so the white overlay text (anchored low) stays readable on any image */
   content: '';
   position: absolute;
-  inset: 0 0 auto 0;
-  height: 38%;
-  background: linear-gradient(180deg, rgba(10, 19, 34, 0.55) 0%, rgba(10, 19, 34, 0) 100%);
+  inset: auto 0 0 0;
+  height: 58%;
+  background: linear-gradient(180deg, rgba(10, 19, 34, 0) 0%, rgba(10, 19, 34, 0.18) 45%, rgba(10, 19, 34, 0.75) 100%);
   pointer-events: none;
   z-index: 1;
 }
@@ -1638,7 +1936,7 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
 }
 .alt-card-overlay {
   position: absolute;
-  top: clamp(20px, 3vw, 32px);
+  bottom: clamp(20px, 3vw, 32px);
   left: clamp(22px, 3vw, 34px);
   right: clamp(22px, 3vw, 34px);
   z-index: 2;
@@ -2577,6 +2875,50 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   display: block;
 }
 
+/* Compositor-thread parallax for browsers with scroll-driven animations.
+   The image is 150% of the frame height with 25% overflow top & bottom, so a
+   ±12% translate of the image (= ±18% of the frame) stays well inside that
+   overflow and the image edges can never appear. Used on mobile (see the
+   @supports block in the ≤720px media query) to keep parallax off the main
+   thread entirely; JS in useParallax.js is the universal fallback. */
+@keyframes alt-parallax {
+  from { transform: translate3d(0, -12%, 0); }
+  to   { transform: translate3d(0, 12%, 0); }
+}
+
+/* Entrance choreography (mobile). Kept at top level; applied only inside the
+   ≤720px media query so desktop is never touched. */
+@keyframes heroRise {
+  from { opacity: 0; transform: translate3d(0, 26px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+/* Same rise, but preserves a translateX(-50%) centered element (.hero-kpis). */
+@keyframes heroRiseCx {
+  from { opacity: 0; transform: translate(-50%, 26px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+@keyframes altTextEnter {
+  from { opacity: 0; transform: translate3d(0, 30px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+/* Opacity-only entrance: a scale() on the rounded, overflow-clipped frame (which
+   also hosts the absolutely-positioned parallaxing <img>) forces the compositor
+   to re-mask the rounded clip every frame of the entry — costly on mobile GPUs.
+   A pure fade reads just as elegant and stays cheap. */
+@keyframes altImageEnter {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+/* Hero background parallax (mobile). The image carries a baked-in scale(1.12)
+   (~42px of overflow per edge) so the ±3% (~21px) translate can never reveal a
+   frame gap. Compositor-driven via scroll() — see the @supports block in the
+   ≤720px media query — so it stays off the main thread and is immune to the
+   URL-bar show/hide jitter that forced the old JS hero-zoom off on mobile. */
+@keyframes heroParallax {
+  from { transform: translate3d(0, -3%, 0) scale(1.12); }
+  to   { transform: translate3d(0,  3%, 0) scale(1.12); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal, .reveal-stagger > * {
     opacity: 1 !important;
@@ -2588,6 +2930,19 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   [data-parallax] picture > img {
     height: 100%;
     transform: none !important;
+  }
+  /* Hero parallax off under reduced motion — back to a plain, static image. */
+  .hero-image img {
+    animation: none !important;
+    transform: none !important;
+  }
+  /* Entrance choreography off: show everything at rest. We only kill the
+     animation (not transform) so .hero-kpis-mobile keeps its translateX(-50%)
+     centering — its resting transform, not an animated one. */
+  .hero-title, .search-mobile-cta-wrap, .hero-kpis-mobile, .hero-trust-strip,
+  .alt-text, .alt-image {
+    animation: none !important;
+    opacity: 1 !important;
   }
 }
 
@@ -2617,10 +2972,21 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
 
 /* ===================  MOBILE  =================== */
 @media (max-width: 720px) {
+  /* Anchor jumps are INSTANT on mobile. Smooth-scrolling across a ~7500px page
+     (nav logo → #top, "Host with us" → #submit, focus-into-sheet) animates for a
+     long beat and stutters on mobile; instant is calmer and far cheaper. */
+  html { scroll-behavior: auto; }
+
   /* HERO — a bit less than full viewport, leaves room for a trust strip
      just below. Image fills with nice rounded borders. */
   .hero {
-    height: 86dvh;
+    /* svh = the SMALL (stable) viewport height. Unlike dvh, svh does NOT
+       re-measure as the mobile URL bar shows/hides on scroll, so the hero
+       keeps a constant height and its bottom-anchored content (search bar,
+       KPI row) no longer shifts/jumps mid-scroll. vh kept as a fallback for
+       browsers without the *vh units. */
+    height: 86vh;
+    height: 86svh;
     min-height: 560px;
     padding: 78px 16px 52px;
     box-sizing: border-box;
@@ -2630,6 +2996,18 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     inset: 6px;
     border-radius: 14px;
   }
+  /* Hero is STATIC on mobile. The old compositor parallax animated a transform
+     on the <img> INSIDE this rounded (border-radius) overflow:hidden frame,
+     which forces the GPU to re-mask the rounded clip on every frame of scroll —
+     the very cost the author already flagged for the entrance scale (see the
+     altImageEnter note above). On mobile GPUs that per-frame re-mask drops
+     frames on the FIRST swipe, so we drop the hero parallax here and keep the
+     base static fill. Desktop keeps its parallax (frozen). */
+  .hero-image img {
+    animation: none !important;
+    transform: none !important;
+    will-change: auto;
+  }
   .hero-inner {
     flex: 1;
     display: flex;
@@ -2637,7 +3015,10 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     align-items: center;       /* center all direct children horizontally */
     width: 100%;
     margin-top: 0;
+    /* svh (stable small viewport) so the title doesn't jiggle up/down as the
+       mobile URL bar shows/hides on scroll. vh kept as a fallback. */
     padding-top: 12vh;        /* title pushed down ~12% of viewport */
+    padding-top: 12svh;
     max-width: 100%;
   }
   /* Push the search bar to the bottom of the available space */
@@ -2913,8 +3294,16 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     height: 24px;
   }
 
-  /* MOTION ON MOBILE — calmer, no parallax (janky on small screens),
-     reveals fade-in only (no blur strain on small text). */
+  /* MOTION ON MOBILE — calmer. Parallax stays OFF everywhere EXCEPT the
+     Alternating images (.alt-image), which keep the desktop parallax so the
+     section matches desktop. Reveals fade-in only (no blur strain). */
+  /* Every image frame is STATIC on mobile — INCLUDING .alt-image. Animating a
+     transform on the inner <img> inside a rounded (border-radius) overflow:hidden
+     frame forces the GPU to re-mask the rounded clip on every frame the frame is
+     on screen; across the 4 alternating frames (plus the hero) that is scroll
+     jank at many points down the page. We keep the cheap opacity entrances
+     (altImageEnter / altTextEnter further down) but drop the continuous parallax
+     entirely. Desktop keeps its parallax (frozen). */
   [data-parallax] > img,
   [data-parallax] picture > img {
     position: static;
@@ -2922,13 +3311,22 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     width: 100%;
     height: 100%;
     transform: none !important;
+    will-change: auto;
+    animation: none !important;
   }
   .reveal {
     filter: none;
-    transform: translate3d(0, 16px, 0);
+    transform: translate3d(0, 24px, 0);
+    /* Opacity lands before the slide finishes — content is readable fast, the
+       last few pixels settle gracefully. The luxe curve (expo-out) decelerates
+       into rest with no bounce. */
     transition:
-      opacity .7s var(--ease-luxe),
-      transform .7s var(--ease-luxe);
+      opacity .6s var(--ease-luxe),
+      transform .8s var(--ease-luxe);
+    /* These are one-shot fade-ins; a permanent will-change keeps a GPU layer
+       alive for every reveal on the page, which adds compositing cost during
+       scroll. Let the browser promote on demand instead. */
+    will-change: auto;
   }
   .reveal.is-visible {
     filter: none;
@@ -2936,17 +3334,48 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   }
   .reveal-stagger > * {
     filter: none;
-    transform: translate3d(0, 12px, 0);
+    transform: translate3d(0, 18px, 0);
     transition:
-      opacity .6s var(--ease-luxe),
-      transform .7s var(--ease-luxe);
+      opacity .55s var(--ease-luxe),
+      transform .72s var(--ease-luxe);
+    will-change: auto;
   }
   .reveal-stagger.is-visible > * {
     filter: none;
     transform: translate3d(0, 0, 0);
   }
-  .reveal-up { transform: translate3d(0, 20px, 0); }
+  .reveal-up { transform: translate3d(0, 28px, 0); }
   .reveal-scale, .reveal-scale.is-visible { transform: none; }
+
+  /* ── LUXURY ENTRANCE CHOREOGRAPHY (mobile only) ──────────────────────
+     The hero rises in on load as a staggered sequence (title → search →
+     KPIs → trust strip). `backwards` fill holds each element hidden during
+     its delay, then releases to its natural state once done — so no transform
+     lingers to create a containing block for the search sheet. */
+  .hero-title             { animation: heroRise .8s var(--ease-luxe) backwards; }
+  .search-mobile-cta-wrap { animation: heroRise .8s var(--ease-luxe) .12s backwards; }
+  .hero-kpis-mobile       { animation: heroRiseCx .78s var(--ease-luxe) .24s backwards; }
+  .hero-trust-strip       { animation: heroRise .76s var(--ease-luxe) .34s backwards; }
+
+  /* The Alternating rows reveal on scroll, but on the COMPOSITOR thread via a
+     view() timeline — zero main-thread work while scrolling. Text rises, the
+     image card breathes in from a hair oversized. Browsers without scroll-
+     driven animations simply show the rows (graceful, no JS needed). The inner
+     <img> keeps its own parallax animation; this animates the frame/text only. */
+  @supports (animation-timeline: view()) {
+    .alt-text {
+      animation: altTextEnter both;
+      animation-timeline: view();
+      animation-range: entry 8% entry 46%;
+      animation-timing-function: var(--ease-luxe);
+    }
+    .alt-image {
+      animation: altImageEnter both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 50%;
+      animation-timing-function: var(--ease-luxe);
+    }
+  }
 
   /* ============ COMBINED MOBILE SEARCH SHEET (accordion-style) ============ */
   /* Hide the 3 individual popovers on mobile — replaced by the combined sheet */
@@ -3007,7 +3436,7 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     cursor: pointer;
     transition: background .2s var(--ease);
   }
-  .mobile-sheet-close:hover { background: rgba(28, 46, 89, 0.12); }
+  .mobile-sheet-close:active { background: rgba(28, 46, 89, 0.12); }
   .mobile-sheet-close svg { width: 16px; height: 16px; }
   .mobile-sheet-scroll {
     flex: 1;
@@ -3106,7 +3535,7 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     cursor: pointer;
     border-radius: 8px;
   }
-  .mobile-dest-result:hover { background: rgba(28, 46, 89, 0.03); }
+  .mobile-dest-result:active { background: rgba(28, 46, 89, 0.06); }
   .mobile-dest-pin {
     display: inline-flex;
     align-items: center;
@@ -3206,7 +3635,7 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     cursor: pointer;
     transition: background .2s var(--ease);
   }
-  .mobile-sheet-actions .action-show:hover { background: var(--navy-soft); }
+  .mobile-sheet-actions .action-show:active { background: var(--navy-soft); }
 
   /* Inline error message at the bottom of the sheet */
   .mobile-sheet-error {
@@ -3336,14 +3765,14 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
      viewport so the next one peeks in — a classic mobile carousel cue.
      The desktop "notch + tab" design is dropped: the label sits ABOVE the
      image as plain text, image fills the card with clean rounded corners. */
-  .ultima { padding: 84px 0 140px; }
+  .ultima { padding: 84px 0 96px; }
   .ultima-title { font-size: clamp(26px, 7vw, 32px); padding: 0 20px; line-height: 1.22; }
   /* 6px lateral margin from the viewport — same as the hero image inset */
   .ultima-cards {
     display: flex;
     flex-wrap: nowrap;
     gap: 12px;
-    margin-top: 32px;
+    margin-top: 48px;
     margin-left: calc(50% - 50vw + 6px);
     margin-right: calc(50% - 50vw + 6px);
     width: calc(100vw - 12px);
@@ -3359,7 +3788,7 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   .ultima-cards::-webkit-scrollbar { display: none; }
   .ultima-card {
     flex: 0 0 auto;
-    width: 270px;
+    width: 300px;
     scroll-snap-align: start;
     display: flex;
     flex-direction: column;
@@ -3373,7 +3802,7 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   .ultima-card:nth-child(5) .ultima-img {
     clip-path: none;
     width: 100%;
-    height: 320px;
+    height: 440px;
     border-radius: 8px;
     overflow: hidden;
   }
@@ -3492,14 +3921,14 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     border-radius: 10px;
   }
   .alt-card-overlay {
-    top: 20px;
+    bottom: 22px;
     left: 22px;
     right: 22px;
   }
   .alt-card-title {
     font-size: 26px;
-    line-height: 1.05;
-    max-width: 12ch;
+    line-height: 1.1;
+    max-width: none;        /* region label — let "Herzliya · Apollonia" sit on one line */
   }
   .alt-card-location {
     font-size: 13px;
@@ -3513,7 +3942,7 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   }
 
   /* ============ EVERY ROOM — editorial blocks on mobile ============ */
-  .everyroom { padding: 48px 0 84px; }
+  .everyroom { padding: 28px 0 112px; }
   .everyroom-blocks {
     grid-template-columns: 1fr;
     row-gap: 44px;
@@ -3621,6 +4050,7 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     margin-top: 24px;
     padding: 16px 22px;
     font-size: 13.5px;
+    background: #FFFFFF;
   }
 
   /* ============ TESTIMONIAL ============ */
@@ -3636,8 +4066,33 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
     padding: 0 24px;
     align-items: center;
     text-align: center;
+    gap: 16px;
+    margin-bottom: 30px;
+    text-shadow: 0 2px 16px rgba(10,19,34,0.5);
   }
-  .testimonial-proof .rating-row { justify-content: center; }
+  /* Clean centered stack instead of the lopsided avatars-left row */
+  .testimonial-proof .rating-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .testimonial-proof .rating-info { align-items: center; gap: 6px; }
+  .testimonial-proof .rating-caption { white-space: nowrap; }
+  .testimonial-proof .rating-eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 12px;
+    opacity: 0.92;
+  }
+  /* Avatars become a centered, ringed cluster */
+  .testimonial-proof .rating-avatars img {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.92);
+    box-shadow: 0 6px 16px -4px rgba(0,0,0,0.45);
+  }
+  .testimonial-proof .rating-avatars img + img { margin-left: -14px; }
   .testimonial-card {
     margin: 0 16px;
     padding: 22px 22px 18px;
@@ -3647,6 +4102,8 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
 
   /* ============ FAQ ============ */
   .faq { padding: 96px 0 104px; }
+  /* Inset the whole section a bit so it reads less wide on mobile */
+  .faq .wrap { padding: 0 34px; }
   .faq-header { margin-bottom: 40px; }
   .faq-title { font-size: 28px; margin-top: 14px; padding: 0 12px; line-height: 1.18; }
   .faq-q { padding: 22px 0; min-height: 64px; align-content: center; }
@@ -3654,21 +4111,31 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
   .faq-a-body { font-size: 14.5px; padding-bottom: 22px; }
 
   /* ============ FOOTER ============ */
-  .footer { padding: 64px 0 32px; }
+  .footer { padding: 60px 0 32px; }
   .footer .wrap.footer-top {
     grid-template-columns: 1fr;
-    gap: 36px;
-    margin-bottom: 44px;
+    gap: 40px;
+    margin-bottom: 40px;
   }
+  /* Logo left, locale/currency pills right */
+  .footer-brand {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  /* Link groups on two roomy columns (3 groups → 2 + 1) */
   .footer-cols {
     grid-template-columns: 1fr 1fr;
-    gap: 24px 20px;
+    gap: 32px 24px;
   }
-  .footer h4 { font-size: 13.5px; margin-bottom: 16px; }
-  .footer li { font-size: 13.5px; margin-bottom: 12px; }
+  .footer h4 { font-size: 14px; margin-bottom: 16px; }
+  .footer li { font-size: 14px; margin-bottom: 12px; }
+  .footer li:last-child { margin-bottom: 0; }
   .footer .logo-img { height: 30px; }
   .footer-pills { gap: 8px; }
-  .footer-pill { padding: 8px 14px; font-size: 12.5px; }
+  .footer-pill { padding: 9px 15px; font-size: 12.5px; }
   .footer .wrap.footer-bottom {
     flex-wrap: wrap;
     gap: 12px 18px;
@@ -3678,6 +4145,273 @@ a, button, label, [role="button"], .search-field, .faq-q, .counter-btn,
 
 /* ============ EXTRA TIGHT @ ≤480px ============ */
 @media (max-width: 480px) {
-  /* Ultima carousel: smaller cards still snap-scroll horizontally */
-  .footer-cols { grid-template-columns: 1fr; gap: 32px; }
+  /* Two columns, a touch tighter on the smallest phones */
+  .footer-cols { grid-template-columns: 1fr 1fr; gap: 28px 18px; }
+}
+
+/* ============ DESKTOP SEARCH MODE TABS + AI BAR (≥721px only) ============
+   A "Search | CheckIn AI" tab strip above the hero search bar, plus an AI
+   prompt bar shown when the AI tab is active. Everything here is wrapped in
+   min-width:721px so the mobile experience (≤720px) is completely untouched:
+   the tab strip and AI bar stay display:none there, and the existing mobile
+   CTAs + bottom sheets keep working exactly as before. */
+.search-modes { display: none; }
+.search-ai-bar { display: none; }
+
+@media (min-width: 721px) {
+  /* The tab strip takes over the top spacing; the bar tucks just beneath it.
+     Tightened so the tabs+bar sit close to the bar's original (pre-tabs)
+     height — the old 40/16 margins pushed the bar ~50px too low in the hero. */
+  .search-modes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    width: 100%;
+    max-width: 760px;
+    margin: 16px auto 0;
+  }
+  .search { margin-top: 10px; }
+  /* On desktop the tab replaces the standalone "find me the perfect place" CTA */
+  .search-ai-cta-wrap { display: none; }
+
+  .search-mode-tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 4px 2px 12px;
+    background: none;
+    border: 0;
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    /* Sits over the desert photo — needs real contrast. Muted slate-navy
+       (AA ~4.9:1 over the tan wash) instead of the old #6B7280 grey, plus a
+       soft cream halo that lifts the text off the photo without a hard shadow. */
+    color: #3D4660;
+    text-shadow: 0 1px 10px rgba(250, 244, 230, 0.55);
+    cursor: pointer;
+    transition: color .2s var(--ease);
+  }
+  .search-mode-tab:hover { color: var(--navy); }
+  .search-mode-tab.is-active { color: var(--navy); }
+  /* Deep teal (AA ~5.3:1 over the photo) — still reads as the brand teal,
+     reinforced by the bright teal underline + sparkle. */
+  .search-mode-tab-ai.is-active { color: #0B4A41; }
+  .search-mode-tab::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    border-radius: 2px;
+    /* White "selected" underline under the tab labels. A soft navy shadow keeps
+       the thin white liseré legible over the light desert photo without a hard
+       edge (kept thin + gentle per the earlier "plus soft" pass). */
+    background: #FFFFFF;
+    box-shadow: 0 1px 4px rgba(28, 46, 89, 0.30);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform .25s var(--ease);
+  }
+  .search-mode-tab.is-active::after { transform: scaleX(1); }
+  .search-mode-tab .ai-sparkle {
+    width: 15px;
+    height: 15px;
+    color: var(--teal);
+  }
+
+  /* Hide the classic field bar when the AI tab is active */
+  .search.search--ai-hidden { display: none; }
+
+  /* AI prompt bar — same footprint as the classic bar so tabbing doesn't jump */
+  .search-ai-bar.is-active { display: flex; }
+  .search-ai-bar {
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    max-width: 760px;
+    height: 84px;
+    margin: 10px auto 0;
+    background: #FFFFFF;
+    border: 1px solid var(--line-cool);
+    border-radius: 16px;
+    padding: 6px 8px 6px 26px;
+    box-shadow: 0 10px 40px -16px rgba(10,31,68,0.18);
+    transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
+  }
+  /* Focused "selected" state — brand-teal stroke + soft teal ring so it's clear
+     you're typing the AI prompt (mirrors the mobile .aichat-input focus, same
+     DA teal). border stays 1px → no layout shift, only colour + halo change. */
+  .search-ai-bar:focus-within {
+    border-color: var(--teal);
+    box-shadow: 0 10px 40px -16px rgba(10,31,68,0.18), 0 0 0 3px rgba(93, 181, 164, 0.20);
+  }
+  .search-ai-bar-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--navy);
+  }
+  .search-ai-bar-input::placeholder {
+    color: #9AA3AF;
+    font-style: italic;
+  }
+  .search-ai-bar-mic {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 0;
+    color: var(--text-muted);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background .2s var(--ease), color .2s var(--ease);
+  }
+  .search-ai-bar-mic:hover { background: rgba(28,46,89,0.05); color: var(--navy); }
+  .search-ai-bar-mic svg { width: 20px; height: 20px; }
+  .search-ai-bar-submit {
+    position: relative;
+    overflow: hidden;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 60px;
+    padding: 0 24px;
+    border: 0;
+    border-radius: 12px;
+    background: #F1F2F4;
+    color: #9AA3AF;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background .2s var(--ease), color .2s var(--ease);
+  }
+  .search-ai-bar-submit .ai-sparkle {
+    width: 16px;
+    height: 16px;
+    color: currentColor;
+  }
+  /* Active = navy (matches the classic search submit). The teal stays the
+     AI accent via the sparkle + tab underline. */
+  .search-ai-bar-submit.is-active { background: var(--navy); color: #FFFFFF; }
+  .search-ai-bar-submit.is-active:hover { background: var(--navy-soft); }
+
+  /* ---- 3 states of the Ask-AI button ---------------------------------- */
+  /* Resting face (sparkle + label) and the overlaid loading face share the
+     same box; we cross-fade between them so the button never resizes. */
+  .ai-btn-face {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity .28s var(--ease), transform .28s var(--ease);
+  }
+  .ai-btn-load {
+    position: absolute;
+    inset: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    opacity: 0;
+    transform: scale(.86);
+    pointer-events: none;
+    transition: opacity .28s var(--ease), transform .28s var(--ease);
+  }
+  .search-ai-bar-submit.is-loading { pointer-events: none; }
+  .search-ai-bar-submit.is-loading .ai-btn-face { opacity: 0; transform: scale(.86); }
+  .search-ai-bar-submit.is-loading .ai-btn-load { opacity: 1; transform: scale(1); }
+
+  /* Light shimmer sweeping across the navy button — "AI is working". */
+  .search-ai-bar-submit::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.28) 50%,
+      transparent 70%);
+    transform: translateX(-120%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .search-ai-bar-submit.is-loading::before {
+    opacity: 1;
+    animation: aiBtnShimmer 1.25s var(--ease) infinite;
+  }
+
+  /* Spinning, twinkling sparkle while thinking. */
+  .ai-btn-load .ai-sparkle--spin {
+    transform-origin: center;
+    animation: aiSparkleTwinkle 1.5s ease-in-out infinite;
+  }
+  /* Three "thinking" dots rolling in a wave. */
+  .ai-think-dots { display: inline-flex; align-items: center; gap: 5px; }
+  .ai-think-dots i {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: .35;
+    animation: aiThinkDot 1.1s ease-in-out infinite;
+  }
+  .ai-think-dots i:nth-child(2) { animation-delay: .16s; }
+  .ai-think-dots i:nth-child(3) { animation-delay: .32s; }
+
+  /* Desktop: render the AI chat as a centered modal, not a full-width sheet.
+     CRITICAL: when CLOSED it sits centered + invisible (opacity:0), so it must
+     NOT capture pointer events — otherwise it floats over the hero and blocks
+     every click on the search bar. (On mobile the base sheet is parked off
+     screen via translateY(100%), so this only matters here.) */
+  .aichat-sheet {
+    left: 50%;
+    right: auto;
+    top: 50%;
+    bottom: auto;
+    width: min(540px, 92vw);
+    height: min(640px, 86vh);
+    max-height: 86vh;
+    border-radius: 20px;
+    transform: translate(-50%, calc(-50% + 16px));
+    pointer-events: none;
+  }
+  .aichat-sheet.open { transform: translate(-50%, -50%); pointer-events: auto; }
+  .aichat-sheet .aichat-top .mobile-sheet-grabber { display: none; }
+}
+
+/* ===== Ask-AI button — in-button "AI is thinking" motion ===== */
+@keyframes aiBtnShimmer {
+  0%   { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+@keyframes aiSparkleTwinkle {
+  0%   { transform: rotate(0deg)   scale(1);    opacity: .9; }
+  50%  { transform: rotate(180deg) scale(1.18); opacity: 1;  }
+  100% { transform: rotate(360deg) scale(1);    opacity: .9; }
+}
+@keyframes aiThinkDot {
+  0%, 70%, 100% { opacity: .3; transform: translateY(0)    scale(.85); }
+  35%           { opacity: 1;  transform: translateY(-3px) scale(1);   }
+}
+@media (prefers-reduced-motion: reduce) {
+  .search-ai-bar-submit.is-loading::before,
+  .ai-btn-load .ai-sparkle--spin,
+  .ai-think-dots i { animation: none !important; }
+  .ai-think-dots i { opacity: .75; }
 }

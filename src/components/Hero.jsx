@@ -5,11 +5,17 @@ export default function Hero() {
     <>
     <header className="hero" id="top">
       <div className="hero-image">
-        <img
-          src="/hero-desert.png"
-          alt="Negev landscape — stone mountains in the late golden light"
-          fetchpriority="high"
-        />
+        <picture>
+          {/* Mobile gets a light 1200px JPEG (~79KB) instead of the 5.6MB desktop
+              PNG — far less decode + GPU texture memory, so the hero parallax and
+              first-screen scroll stay smooth. Desktop keeps the original PNG. */}
+          <source media="(max-width: 720px)" srcSet="/hero-desert-mobile.jpg" />
+          <img
+            src="/hero-desert.png"
+            alt="Negev landscape — stone mountains in the late golden light"
+            fetchpriority="high"
+          />
+        </picture>
       </div>
 
       <div className="hero-inner">
@@ -37,9 +43,9 @@ export default function Hero() {
         <div className="rating-eyebrow">Quietly trusted</div>
         <div className="rating-row">
           <div className="rating-avatars" aria-hidden="true">
-            <img src="/avatar2.png" alt="" loading="lazy" />
-            <img src="/avatar3.png" alt="" loading="lazy" />
-            <img src="/avatar4.png" alt="" loading="lazy" />
+            <img src="/avatar2.png" alt="" loading="lazy" decoding="async" />
+            <img src="/avatar3.png" alt="" loading="lazy" decoding="async" />
+            <img src="/avatar4.png" alt="" loading="lazy" decoding="async" />
           </div>
           <div className="rating-info">
             <div className="rating-stars">

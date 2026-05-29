@@ -53,8 +53,8 @@ export default function Submit() {
         </div>
         <div className="submit-media reveal reveal-d2">
           <div className="submit-media-imgs">
-            <div className="submit-img-main"><img src="/form.png" alt="A residence" loading="lazy" /></div>
-            <div className="submit-img-sub"><img src="/formsub.png" alt="Interior detail" loading="lazy" /></div>
+            <div className="submit-img-main"><img src="/form.png" alt="A residence" loading="lazy" decoding="async" /></div>
+            <div className="submit-img-sub"><img src="/formsub.png" alt="Interior detail" loading="lazy" decoding="async" /></div>
           </div>
         </div>
         {/* CTA as an independent grid item — placed via grid-area per breakpoint */}

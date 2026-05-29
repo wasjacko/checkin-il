@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import AiChat from './AiChat.jsx';
 
 const ALL_DESTS = [
   { value: 'tel-aviv', name: 'Tel Aviv', img: '/telaviv.jpg' },
@@ -74,10 +75,55 @@ export default function SearchBar() {
   // Error state for the "Show N places" action when destination is missing
   const [mobileError, setMobileError] = useState(null);  // null | 'no-dest'
 
-  // === AI search sheet ===
+  // === AI chat sheet ===
   const [aiSheetOpen, setAiSheetOpen] = useState(false);
+
+  // === Desktop search mode (tabs above the bar) ===
+  // 'search' = classic 3-field bar · 'ai' = AI prompt bar. Desktop-only;
+  // the tab strip is hidden on mobile so this stays 'search' there.
+  const [searchMode, setSearchMode] = useState('search');
   const [aiQuery, setAiQuery] = useState('');
-  const [aiSending, setAiSending] = useState(false);
+  const aiInputRef = useRef(null);
+  const canAskAi = aiQuery.trim().length > 0;
+  // 3rd state of the Ask-AI button: a simulated "AI is thinking" pass that
+  // plays inside the button (shimmer + spinning sparkle + thinking dots)
+  // before the chat sheet opens.
+  const [aiLoading, setAiLoading] = useState(false);
+  const aiLoadTimer = useRef(null);
+
+  const switchMode = (mode) => {
+    setSearchMode(mode);
+    setOpenField(null);
+    // Leaving AI mode cancels any pending "thinking" pass.
+    if (mode !== 'ai' && aiLoadTimer.current) {
+      clearTimeout(aiLoadTimer.current);
+      aiLoadTimer.current = null;
+      setAiLoading(false);
+    }
+    if (mode === 'ai') {
+      requestAnimationFrame(() => aiInputRef.current && aiInputRef.current.focus());
+    }
+  };
+  // Ask AI (desktop bar): if empty → just focus the field. Otherwise play the
+  // in-button "AI is thinking" animation, then settle back to the resting
+  // button. Per design, this DOES NOT open the chat modal on desktop — the
+  // loading pass is the whole interaction here. (The chat sheet stays a
+  // mobile-only experience, reached via .search-ai-cta.) Reduced-motion users
+  // get a much shorter pass.
+  const onAskAi = (e) => {
+    if (e) e.preventDefault();
+    if (aiLoading) return;
+    if (!canAskAi) {
+      aiInputRef.current && aiInputRef.current.focus();
+      return;
+    }
+    setAiLoading(true);
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    aiLoadTimer.current = setTimeout(() => {
+      aiLoadTimer.current = null;
+      setAiLoading(false);
+    }, reduce ? 400 : 1200);
+  };
 
   // Close popovers when clicking outside
   useEffect(() => {
@@ -102,32 +148,19 @@ export default function SearchBar() {
     setGuestsDisplay(t);
   }, [adults, children, guestsTouched]);
 
-  // Lock body scroll when ANY sheet is open (desktop popover, mobile accordion, AI)
+  // Lock body scroll only for true overlays: the mobile combined sheet and the
+  // AI chat sheet. Desktop field popovers (openField) are anchored to the bar
+  // (position:absolute) and scroll with the page, so we DON'T lock scroll for
+  // them — the page must stay scrollable while a desktop search popover is open.
   useEffect(() => {
-    const anyOpen = openField || mobileSheetOpen || aiSheetOpen;
+    const anyOpen = mobileSheetOpen || aiSheetOpen;
     if (anyOpen) document.body.classList.add('sheet-open');
     else document.body.classList.remove('sheet-open');
     return () => document.body.classList.remove('sheet-open');
-  }, [openField, mobileSheetOpen, aiSheetOpen]);
+  }, [mobileSheetOpen, aiSheetOpen]);
 
-  // === AI sheet handlers ===
-  const onAISubmit = () => {
-    if (!aiQuery.trim()) return;
-    setAiSending(true);
-    // Mock: in production, post aiQuery to the AI search backend
-    setTimeout(() => {
-      setAiSending(false);
-      setAiSheetOpen(false);
-      setAiQuery('');
-      const btn = submitBtnRef.current;
-      if (btn) {
-        btn.classList.remove('is-pulse');
-        void btn.offsetWidth;
-        btn.classList.add('is-pulse');
-        setTimeout(() => btn.classList.remove('is-pulse'), 700);
-      }
-    }, 900);
-  };
+  // Clear the pending "AI is thinking" timer if the component unmounts.
+  useEffect(() => () => { if (aiLoadTimer.current) clearTimeout(aiLoadTimer.current); }, []);
 
   // === Mobile combined sheet handlers ===
   const openMobileSheet = () => {
@@ -297,9 +330,41 @@ export default function SearchBar() {
 
   return (
     <>
+    {/* ============ DESKTOP-ONLY MODE TABS (Search | CheckIn AI) ============
+        A small tab strip above the search bar that toggles between the
+        classic field-based search and an AI prompt bar. Hidden on mobile
+        (mobile keeps its own CTAs + bottom sheets), so searchMode stays
+        'search' on touch. */}
+    <div className="search-modes" role="tablist" aria-label="Search mode">
+      <button
+        type="button"
+        role="tab"
+        aria-selected={searchMode === 'search'}
+        className={'search-mode-tab' + (searchMode === 'search' ? ' is-active' : '')}
+        onClick={() => switchMode('search')}
+      >
+        Search
+      </button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected={searchMode === 'ai'}
+        className={'search-mode-tab search-mode-tab-ai' + (searchMode === 'ai' ? ' is-active' : '')}
+        onClick={() => switchMode('ai')}
+      >
+        <span>CheckIn AI</span>
+        <span className="ai-sparkle" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M10 2 L11.4 7.6 17 9 L11.4 10.4 10 16 L8.6 10.4 3 9 L8.6 7.6 Z" />
+            <path d="M18 13 L18.7 15.8 21.5 16.5 L18.7 17.2 18 20 L17.3 17.2 14.5 16.5 L17.3 15.8 Z" />
+          </svg>
+        </span>
+      </button>
+    </div>
+
     <form
       ref={formRef}
-      className="search"
+      className={'search' + (searchMode === 'ai' ? ' search--ai-hidden' : '')}
       id="heroSearch"
       autoComplete="off"
       aria-label="Search a residence"
@@ -460,7 +525,7 @@ export default function SearchBar() {
                       onClick={() => pickDest(s)}
                     >
                       <div className="dest-suggested-img">
-                        <img src={s.img} alt={s.name} loading="lazy" />
+                        <img src={s.img} alt={s.name} loading="lazy" decoding="async" />
                       </div>
                       <div className="dest-suggested-name">{s.name}</div>
                     </button>
@@ -690,6 +755,65 @@ export default function SearchBar() {
       </div>
     </form>
 
+    {/* ============ DESKTOP AI PROMPT BAR ============
+        Shown only on desktop when the "CheckIn AI" tab is active (display
+        toggled in CSS via .is-active). Same footprint as the classic bar so
+        switching tabs doesn't shift the layout. Hidden on mobile. */}
+    <form
+      className={'search-ai-bar' + (searchMode === 'ai' ? ' is-active' : '')}
+      onSubmit={onAskAi}
+      aria-label="Describe your stay"
+    >
+      <input
+        ref={aiInputRef}
+        type="text"
+        className="search-ai-bar-input"
+        placeholder="Describe your dreams rent (e.g. 'Best beachfront in Tel aviv for a week-end)"
+        value={aiQuery}
+        onChange={(e) => setAiQuery(e.target.value)}
+        aria-label="Describe your ideal stay"
+      />
+      <button
+        type="button"
+        className="search-ai-bar-mic"
+        onClick={() => aiInputRef.current && aiInputRef.current.focus()}
+        aria-label="Describe your stay"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <rect x="9" y="3" width="6" height="11" rx="3" />
+          <path d="M5 11a7 7 0 0 0 14 0" />
+          <line x1="12" y1="18" x2="12" y2="22" />
+        </svg>
+      </button>
+      <button
+        type="submit"
+        className={'search-ai-bar-submit' + (canAskAi ? ' is-active' : '') + (aiLoading ? ' is-loading' : '')}
+        aria-label="Ask AI"
+        aria-busy={aiLoading || undefined}
+      >
+        {/* Resting face: sparkle + label. Fades out when the AI pass runs. */}
+        <span className="ai-btn-face">
+          <span className="ai-sparkle" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M10 2 L11.4 7.6 17 9 L11.4 10.4 10 16 L8.6 10.4 3 9 L8.6 7.6 Z" />
+              <path d="M18 13 L18.7 15.8 21.5 16.5 L18.7 17.2 18 20 L17.3 17.2 14.5 16.5 L17.3 15.8 Z" />
+            </svg>
+          </span>
+          <span>Ask AI</span>
+        </span>
+        {/* Loading face: overlaid (no layout shift) — spinning sparkle + thinking dots. */}
+        <span className="ai-btn-load" aria-hidden="true">
+          <span className="ai-sparkle ai-sparkle--spin">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M10 2 L11.4 7.6 17 9 L11.4 10.4 10 16 L8.6 10.4 3 9 L8.6 7.6 Z" />
+              <path d="M18 13 L18.7 15.8 21.5 16.5 L18.7 17.2 18 20 L17.3 17.2 14.5 16.5 L17.3 15.8 Z" />
+            </svg>
+          </span>
+          <span className="ai-think-dots"><i></i><i></i><i></i></span>
+        </span>
+      </button>
+    </form>
+
     {/* ============ AI SEARCH — mirror of the main CTA, white variant ============
         Same nested teal-gradient wrap + box-shadow strokes as the classic
         search button — just inverted (white bg instead of navy). One single
@@ -868,7 +992,7 @@ export default function SearchBar() {
                           }}
                         >
                           <div className="mobile-suggested-img">
-                            <img src={s.img} alt={s.name} loading="lazy" />
+                            <img src={s.img} alt={s.name} loading="lazy" decoding="async" />
                           </div>
                           <div className="mobile-suggested-name">{s.name}</div>
                         </button>
@@ -1062,100 +1186,8 @@ export default function SearchBar() {
     document.body
     )}
 
-    {/* ============ AI SEARCH SHEET (portaled to body) ============ */}
-    {createPortal(
-      <>
-        {aiSheetOpen && (
-          <div
-            className="sheet-backdrop sheet-backdrop-top sheet-backdrop-ai"
-            onClick={() => setAiSheetOpen(false)}
-            aria-hidden="true"
-          />
-        )}
-        <div
-          className={'search-ai-sheet' + (aiSheetOpen ? ' open' : '')}
-          role="dialog"
-          aria-label="Describe your stay"
-          aria-modal="true"
-        >
-          <div className="mobile-sheet-top">
-            <span className="mobile-sheet-grabber" aria-hidden="true" />
-            <button
-              type="button"
-              className="mobile-sheet-close"
-              onClick={() => setAiSheetOpen(false)}
-              aria-label="Close"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
-          </div>
-
-          <div className="ai-sheet-content">
-            <div className="ai-sheet-header">
-              <span className="ai-sparkle ai-sparkle-lg" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M10 2 L11.4 7.6 17 9 L11.4 10.4 10 16 L8.6 10.4 3 9 L8.6 7.6 Z" />
-                  <path d="M18 13 L18.7 15.8 21.5 16.5 L18.7 17.2 18 20 L17.3 17.2 14.5 16.5 L17.3 15.8 Z" />
-                </svg>
-              </span>
-              <h3 className="ai-sheet-title">Describe your stay</h3>
-              <p className="ai-sheet-subtitle">
-                Tell us what you have in mind — we&rsquo;ll find the closest residences.
-              </p>
-            </div>
-
-            <textarea
-              className="ai-sheet-textarea"
-              value={aiQuery}
-              onChange={(e) => setAiQuery(e.target.value)}
-              placeholder="A quiet stone house in the Upper Galilee, four nights in late September. Two adults, somewhere with a view, a pool would be nice…"
-              rows={5}
-              enterKeyHint="send"
-              aria-label="Describe your stay"
-            />
-
-            <div className="ai-sheet-suggestions">
-              <span className="ai-sheet-suggestions-label">Or try…</span>
-              <div className="ai-sheet-chips">
-                {[
-                  'A weekend in Tel Aviv with a sea view',
-                  'A farmhouse near Caesarea for a family of four',
-                  'Late September in the Galilee, quiet',
-                ].map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    className="ai-sheet-chip"
-                    onClick={() => setAiQuery(s)}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <button
-              type="button"
-              className="ai-sheet-submit"
-              onClick={onAISubmit}
-              disabled={!aiQuery.trim() || aiSending}
-            >
-              {aiSending ? 'Finding…' : 'Find places'}
-              {!aiSending && (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              )}
-            </button>
-          </div>
-        </div>
-      </>,
-      document.body
-    )}
+    {/* ============ AI CHAT SHEET (self-portaling) ============ */}
+    <AiChat open={aiSheetOpen} onClose={() => setAiSheetOpen(false)} />
     </>
   );
 }

@@ -35,16 +35,16 @@ export default function Testimonial() {
   return (
     <section className="testimonial">
       <div className="testimonial-bg" aria-hidden="true">
-        <img src="/avis.jpg" alt="" loading="lazy" />
+        <img src="/avis.jpg" alt="" loading="lazy" decoding="async" />
       </div>
       <div className="wrap">
         <div className="testimonial-proof reveal">
           <div className="rating-eyebrow">Quietly trusted</div>
           <div className="rating-row">
             <div className="rating-avatars" aria-hidden="true">
-              <img src="/avatar2.png" alt="" loading="lazy" />
-              <img src="/avatar3.png" alt="" loading="lazy" />
-              <img src="/avatar4.png" alt="" loading="lazy" />
+              <img src="/avatar2.png" alt="" loading="lazy" decoding="async" />
+              <img src="/avatar3.png" alt="" loading="lazy" decoding="async" />
+              <img src="/avatar4.png" alt="" loading="lazy" decoding="async" />
             </div>
             <div className="rating-info">
               <div className="rating-stars">
@@ -63,7 +63,7 @@ export default function Testimonial() {
           <p className="testimonial-quote">{r.quote}</p>
           <div className="testimonial-foot">
             <div className="testimonial-author">
-              <img src={r.avatar} alt="" className="testimonial-avatar" loading="lazy" />
+              <img src={r.avatar} alt="" className="testimonial-avatar" loading="lazy" decoding="async" />
               <span>{r.name}</span>
             </div>
             <div className="testimonial-dots" aria-hidden="true">

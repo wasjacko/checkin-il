@@ -10,31 +10,31 @@ export default function Ultima() {
           <div className="ultima-card">
             <span className="ultima-tab">Room</span>
             <div className="ultima-img">
-              <img src="/croute1.png" alt="Room" loading="lazy" />
+              <img src="/croute1.png" alt="Room" loading="lazy" decoding="async" />
             </div>
           </div>
           <div className="ultima-card">
             <span className="ultima-tab">Garden</span>
             <div className="ultima-img">
-              <img src="/croute2.png" alt="Garden" loading="lazy" />
+              <img src="/croute2.png" alt="Garden" loading="lazy" decoding="async" />
             </div>
           </div>
           <div className="ultima-card">
             <span className="ultima-tab">Sense spa</span>
             <div className="ultima-img">
-              <img src="/croute3.png" alt="Sense spa" loading="lazy" />
+              <img src="/croute3.png" alt="Sense spa" loading="lazy" decoding="async" />
             </div>
           </div>
           <div className="ultima-card">
             <span className="ultima-tab">Kitchen</span>
             <div className="ultima-img">
-              <img src="/kitchen.jpg" alt="Kitchen" loading="lazy" />
+              <img src="/kitchen.jpg" alt="Kitchen" loading="lazy" decoding="async" />
             </div>
           </div>
           <div className="ultima-card">
             <span className="ultima-tab">Suite</span>
             <div className="ultima-img">
-              <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=900&q=80" alt="Suite" loading="lazy" />
+              <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=900&q=80" alt="Suite" loading="lazy" decoding="async" />
             </div>
           </div>
         </div>

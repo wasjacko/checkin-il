@@ -5,7 +5,7 @@ export default function Footer() {
       <div className="wrap footer-top">
         <div className="footer-brand">
           <a href="#top" className="logo" aria-label="checkin — home">
-            <img className="logo-img" src="/checkin-logo.png" alt="checkin" />
+            <img className="logo-img" src="/checkin-logo.png" alt="checkin" loading="lazy" decoding="async" />
           </a>
           <div className="footer-pills">
             <button className="footer-pill" type="button">

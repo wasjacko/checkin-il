@@ -1,10 +1,8 @@
-import { useIsMobile } from '../hooks/useIsMobile.js';
-
 export default function Alternating() {
-  const isMobile = useIsMobile();
-
-  // Unified data: desktop (/goal) uses `label` + `reverse`; mobile redesign
-  // uses `title` + `location`. Copy / image / alt are shared.
+  // One layout for every viewport: the desktop alternating rows. They already
+  // collapse to a single stacked column under 820px, so mobile matches desktop
+  // (legible text on white + image parallax). `label`/`copy`/`img` are used;
+  // `title`/`location` are retained in the data but no longer rendered.
   const rows = [
     {
       label: 'Tel-Aviv',
@@ -47,34 +45,17 @@ export default function Alternating() {
   return (
     <section className="alternating" id="alternating">
       <div className="wrap">
-        {isMobile ? (
-          <div className="alt-stack">
-            {rows.map((r, i) => (
-              <article key={i} className="alt-card reveal">
-                <div className="alt-card-media" data-parallax="1">
-                  <img src={r.img} alt={r.alt} loading="lazy" />
-                </div>
-                <div className="alt-card-overlay">
-                  <h3 className="alt-card-title">{r.title}</h3>
-                  <p className="alt-card-location">{r.location}</p>
-                </div>
-                <p className="alt-card-copy">{r.copy}</p>
-              </article>
-            ))}
-          </div>
-        ) : (
-          rows.map((r, i) => (
-            <div key={i} className={'alt-row' + (r.reverse ? ' reverse' : '')}>
-              <div className="alt-text">
-                <span className="alt-label">{r.label}</span>
-                <h3>{r.copy}</h3>
-              </div>
-              <div className="alt-image" data-parallax="1">
-                <img src={r.img} alt={r.alt} loading="lazy" />
-              </div>
+        {rows.map((r, i) => (
+          <div key={i} className={'alt-row' + (r.reverse ? ' reverse' : '')}>
+            <div className="alt-text">
+              <span className="alt-label">{r.label}</span>
+              <h3>{r.copy}</h3>
             </div>
-          ))
-        )}
+            <div className="alt-image" data-parallax="1">
+              <img src={r.img} alt={r.alt} loading="lazy" decoding="async" />
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );

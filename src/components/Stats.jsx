@@ -47,16 +47,13 @@ export default function Stats() {
     );
     obs.observe(stats);
 
-    function checkVisible() {
-      if (started) return;
-      const r = stats.getBoundingClientRect();
-      if (r.top < window.innerHeight * 0.85 && r.bottom > 0) trigger();
-    }
-    window.addEventListener('scroll', checkVisible, { passive: true });
-    checkVisible();
+    // The IntersectionObserver above is the SOLE trigger. We deliberately do NOT
+    // also listen on 'scroll': a scroll handler calling getBoundingClientRect on
+    // every event forces a layout read mid-scroll (a jank source on mobile) and
+    // is fully redundant with the observer — which already fires the moment the
+    // section enters the viewport, including when it's already in view on mount.
     return () => {
       obs.disconnect();
-      window.removeEventListener('scroll', checkVisible);
     };
   }, []);
 

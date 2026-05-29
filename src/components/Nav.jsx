@@ -8,6 +8,7 @@ export default function Nav() {
           alt="checkin"
           width="346"
           height="100"
+          decoding="async"
         />
       </a>
       <div className="nav-right">

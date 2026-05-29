@@ -32,7 +32,7 @@ export default function Picks() {
             {set1.map((it, i) => (
               <article key={'m' + i} className="picks-card">
                 <div className="picks-card-media">
-                  <img src={it.src} alt={it.label + ' — ' + it.location} loading="lazy" />
+                  <img src={it.src} alt={it.label + ' — ' + it.location} loading="lazy" decoding="async" />
                 </div>
                 <div className="picks-card-info">
                   <div className="picks-card-label">{it.label}</div>
@@ -63,13 +63,13 @@ export default function Picks() {
           <div className="picks-row">
             {set1.map((it, i) => (
               <div key={'a' + i} className={'picks-item' + (it.wide ? ' picks-item-wide' : '')}>
-                <img src={it.src} alt="Featured residence" loading="lazy" />
+                <img src={it.src} alt="Featured residence" loading="lazy" decoding="async" />
               </div>
             ))}
             {/* Duplicate set for seamless loop */}
             {set1.map((it, i) => (
               <div key={'b' + i} className={'picks-item' + (it.wide ? ' picks-item-wide' : '')} aria-hidden="true">
-                <img src={it.src} alt="" loading="lazy" />
+                <img src={it.src} alt="" loading="lazy" decoding="async" />
               </div>
             ))}
           </div>
